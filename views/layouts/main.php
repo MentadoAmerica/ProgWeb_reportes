@@ -4,79 +4,86 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
-use app\widgets\Alert;
-use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
 
-$this->registerCsrfMetaTags();
-$this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
-$this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
-$this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
-$this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+// CSS inline para navbar y fondo general
+$this->registerCss("
+    body {
+        background-color: #fdf8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .navbar-guindo {
+        background-color: #800020 !important;
+    }
+    .navbar-guindo .navbar-brand,
+    .navbar-guindo .navbar-nav .nav-link {
+        color: #fdf8f0 !important;
+    }
+    .navbar-guindo .navbar-brand:hover,
+    .navbar-guindo .navbar-nav .nav-link:hover {
+        color: #ffccaa !important;
+    }
+    .navbar-toggler {
+        background-color: #fdf8f0;
+    }
+    footer {
+        background-color: #800020;
+        color: #fdf8f0;
+        padding: 10px 0;
+        text-align: center;
+        margin-top: 30px;
+    }
+");
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
-<header id="header">
+<header>
     <?php
     NavBar::begin([
-    'brandLabel' => Yii::$app->name,
-    'brandUrl' => Yii::$app->homeUrl,
-    'options' => [
-        'class' => 'navbar-inverse navbar-fixed-top',
-        'style' => 'background-color: #5b081c; border-color: #5a1a1a;',
-    ],
-]);
+        'brandLabel' => 'Reportes de Camiones',
+        'brandUrl' => Yii::$app->homeUrl,
+        'options' => [
+            'class' => 'navbar navbar-expand-md navbar-dark fixed-top navbar-guindo',
+        ],
+    ]);
+    $menuItems = [
+        ['label' => 'Inicio', 'url' => ['/site/index']],
+        ['label' => 'Crear Reporte', 'url' => ['/detalle-diario/create']],
+        ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']],
+        ['label' => 'Modificar Reporte', 'url' => ['/detalle-diario/index']],
+    ];
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
+        'options' => ['class' => 'navbar-nav ms-auto'],
+        'items' => $menuItems,
     ]);
     NavBar::end();
     ?>
 </header>
 
-<main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
-        <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-        <?php endif ?>
-        <?= Alert::widget() ?>
+<main role="main" class="flex-shrink-0">
+    <div class="container mt-5 pt-4">
         <?= $content ?>
     </div>
 </main>
 
-<footer id="footer" class="mt-auto py-3 bg-light">
+<footer>
     <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
-        </div>
+        <p>&copy; <?= date('Y') ?> Sistema de Reportes de Camiones - Todos los derechos reservados.</p>
     </div>
 </footer>
 

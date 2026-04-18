@@ -86,14 +86,93 @@ a.desc:after {
 .form-group {
     margin-bottom: 1rem;
 }
+/* web/css/site.css - Estilos personalizados para el sistema de reportes */
 
-/* Estilos globales */
+/* Fondo general y tipografía */
 body {
     background-color: #fdf8f0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+/* Contenedor principal del formulario */
+.detalle-diario-form {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* Botón guindo (vino) */
+.btn-guindo {
+    background-color: #800020 !important;
+    border-color: #800020 !important;
+    color: white !important;
+    font-weight: bold;
+}
+.btn-guindo:hover {
+    background-color: #a00028 !important;
+    border-color: #a00028 !important;
+}
+
+/* Enfoque de campos de formulario */
+.form-control:focus {
+    border-color: #800020 !important;
+    box-shadow: 0 0 5px rgba(128,0,32,0.3) !important;
+}
+
+/* Tablas: cabecera guindo y filas alternas beige */
+.table thead {
+    background-color: #800020 !important;
+    color: white !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9e4d4 !important;
+}
+
+/* Etiquetas de campos */
+label {
+    font-weight: 600 !important;
+    color: #5a3a2a !important;
+}
+
+/* Alertas informativas */
+.alert-info {
+    background-color: #e6ccb3 !important;
+    border-color: #d4a373 !important;
+    color: #5a3a2a !important;
+}
+
+/* Panel de resumen (para vista de detalle y formulario) */
+.panel-guindo {
+    background-color: #f9e4d4;
+    border-left: 5px solid #800020;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+.panel-guindo h3 {
+    margin-top: 0;
+    color: #800020;
+}
+
+/* Etiquetas de información en vista de detalle */
+.info-label {
+    font-weight: bold;
+    color: #5a3a2a;
+}
+
+/* Contenedor de reporte (vista de detalle) */
+.reporte-container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+/* Barra de navegación (navbar) con colores guindo */
 .navbar-inverse {
-    background-color: #b49aa1 !important;
+    background-color: #800020 !important;
     border-color: #5a1a1a !important;
 }
 .navbar-inverse .navbar-brand,
@@ -104,12 +183,16 @@ body {
 .navbar-inverse .navbar-nav > li > a:hover {
     color: #ffccaa !important;
 }
-.btn-guindo {
-    background-color: #800020;
-    border-color: #800020;
-    color: white;
+
+/* Navbar color guindo */
+.navbar-guindo {
+    background-color: #800020 !important;
 }
-.btn-guindo:hover {
-    background-color: #a00028;
-    border-color: #a00028;
+.navbar-guindo .navbar-brand,
+.navbar-guindo .navbar-nav .nav-link {
+    color: #fdf8f0 !important;
+}
+.navbar-guindo .navbar-brand:hover,
+.navbar-guindo .navbar-nav .nav-link:hover {
+    color: #ffccaa !important;
 }
