@@ -4,26 +4,26 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
-// CSS para colores beige y guindo
+// CSS inline (opcional)
 $this->registerCss("
     body { background-color: #fdf8f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .detalle-diario-form { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .btn-guindo { background-color: #800020; border-color: #800020; color: white; }
-    .btn-guindo:hover { background-color: #a00028; border-color: #a00028; }
-    .form-control:focus { border-color: #800020; box-shadow: 0 0 5px rgba(128,0,32,0.3); }
-    .table thead { background-color: #800020; color: white; }
-    .table-striped>tbody>tr:nth-of-type(odd) { background-color: #f9e4d4; }
-    label { font-weight: 600; color: #5a3a2a; }
-    .navbar-inverse { background-color: #800020; border-color: #5a1a1a; }
-    .navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a { color: #fdf8f0; }
-    .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-nav>li>a:hover { color: #ffccaa; }
+    .detalle-diario-form { background-color: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
+    .btn-guindo { background-color: #800020 !important; border-color: #800020 !important; color: white !important; font-weight: bold; }
+    .btn-guindo:hover { background-color: #a00028 !important; border-color: #a00028 !important; }
+    .form-control:focus { border-color: #800020 !important; box-shadow: 0 0 5px rgba(128,0,32,0.3) !important; }
+    .table thead { background-color: #800020 !important; color: white !important; }
+    .table-striped>tbody>tr:nth-of-type(odd) { background-color: #f9e4d4 !important; }
+    label { font-weight: 600 !important; color: #5a3a2a !important; }
+    .alert-info { background-color: #e6ccb3 !important; border-color: #d4a373 !important; color: #5a3a2a !important; }
+    .resumen-panel { background-color: #f9e4d4; border-left: 5px solid #800020; padding: 15px; margin-top: 20px; border-radius: 8px; }
+    .resumen-panel h4 { color: #800020; margin-top: 0; }
 ");
 ?>
 
 <div class="detalle-diario-form">
     <?php $form = ActiveForm::begin(['id' => 'form-reporte']); ?>
 
-    <!-- PRIMERA FILA: 3 columnas con los campos esenciales -->
+    <!-- PRIMERA FILA: 3 COLUMNAS -->
     <div class="row">
         <div class="col-md-4">
             <?= $form->field($model, 'fecha_orden')->input('date') ?>
@@ -60,7 +60,7 @@ $this->registerCss("
         </div>
     </div>
 
-    <!-- SEGUNDA FILA: 3 columnas para diésel -->
+    <!-- SEGUNDA FILA: DIÉSEL -->
     <div class="row">
         <div class="col-md-4">
             <?= $form->field($model, 'diesel_iniciar')->textInput(['type' => 'number', 'step' => 'any']) ?>
@@ -73,8 +73,8 @@ $this->registerCss("
         </div>
     </div>
 
-    <!-- TABLA DE COLONIAS (aparece al seleccionar ruta) -->
-    <div id="tabla-colonias-container" style="display: none; margin-top: 20px;">
+    <!-- TABLA DE COLONIAS -->
+    <div id="tabla-colonias-container" style="display: none; margin-top: 30px;">
         <h4>Confirmación de colonias y porcentajes</h4>
         <table class="table table-bordered table-striped" id="tabla-colonias">
             <thead>
@@ -90,17 +90,41 @@ $this->registerCss("
         <div id="suma-porcentajes" class="alert alert-info"></div>
     </div>
 
-    <!-- Campos ocultos -->
-    <?= $form->field($model, 'id_folio')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'fecha_captura')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'total_km')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'anio')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'mes')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'dia')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'cant_colonias')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'suma_por_atendida')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'por_realizado')->hiddenInput()->label(false) ?>
-    <?= $form->field($model, 'porcentaje_efectividad')->hiddenInput()->label(false) ?>
+    <!-- PANEL DE RESUMEN (CAMPOS CALCULADOS VISIBLES) -->
+    <div class="resumen-panel">
+        <h4>Resumen del reporte (datos automáticos)</h4>
+        <div class="row">
+            <div class="col-md-3">
+                <label>Folio</label>
+                <input type="text" class="form-control" readonly value="Se generará al guardar" id="resumen-folio">
+            </div>
+            <div class="col-md-3">
+                <label>Fecha de captura</label>
+                <input type="text" class="form-control" readonly id="resumen-fecha-captura">
+            </div>
+            <div class="col-md-2">
+                <label>Cant. colonias</label>
+                <input type="text" class="form-control" readonly id="resumen-cant-colonias" value="0">
+            </div>
+            <div class="col-md-2">
+                <label>Suma %</label>
+                <input type="text" class="form-control" readonly id="resumen-suma-porcentajes" value="0">
+            </div>
+            <div class="col-md-2">
+                <label>Efectividad (%)</label>
+                <input type="text" class="form-control" readonly id="resumen-efectividad" value="0">
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMPOS OCULTOS (para enviar los valores al servidor) -->
+    <?= $form->field($model, 'id_folio')->hiddenInput(['id' => 'hidden-id-folio'])->label(false) ?>
+    <?= $form->field($model, 'fecha_captura')->hiddenInput(['id' => 'hidden-fecha-captura'])->label(false) ?>
+    <!-- NOTA: total_km, anio, mes, dia NO se incluyen porque son generados por la BD -->
+    <?= $form->field($model, 'cant_colonias')->hiddenInput(['id' => 'hidden-cant-colonias'])->label(false) ?>
+    <?= $form->field($model, 'suma_por_atendida')->hiddenInput(['id' => 'hidden-suma-porcentajes'])->label(false) ?>
+    <?= $form->field($model, 'por_realizado')->hiddenInput(['id' => 'hidden-efectividad'])->label(false) ?>
+    <?= $form->field($model, 'porcentaje_efectividad')->hiddenInput(['id' => 'hidden-efectividad2'])->label(false) ?>
     <?php for($i=1;$i<=11;$i++): ?>
         <?= $form->field($model, "colonia_$i")->hiddenInput()->label(false) ?>
         <?= $form->field($model, "por_colonia_$i")->hiddenInput()->label(false) ?>
@@ -117,18 +141,16 @@ $this->registerCss("
 <?php
 $urlGetUnidades = Url::to(['detalle-diario/get-unidades']);
 $urlGetColonias = Url::to(['detalle-diario/get-colonias']);
-$script = <<<JS
-$('#tipo-unidad').change(function() {
-    var id_tipo = $(this).val();
-    if(id_tipo) {
-        $.get('{$urlGetUnidades}&id_tipo=' + id_tipo, function(data) {
-            $('#num-unidad').html(data);
-        });
-    } else {
-        $('#num-unidad').html('<option>Seleccione tipo primero</option>');
-    }
-});
 
+// Fecha y hora actual para mostrar en el resumen
+$fechaActual = date('Y-m-d H:i:s');
+
+$script = <<<JS
+// Mostrar fecha de captura actual en el campo de resumen
+$('#resumen-fecha-captura').val('$fechaActual');
+$('#hidden-fecha-captura').val('$fechaActual');
+
+// Al seleccionar ruta, actualizar la tabla y la cantidad de colonias
 $('#ruta').change(function() {
     var id_ruta = $(this).val();
     if(id_ruta) {
@@ -146,33 +168,66 @@ $('#ruta').change(function() {
                         '</td>' +
                         '<td>' + colonia.habitantes + '</td>' +
                         '<td><input type="number" name="detalle_colonias['+index+'][porcentaje]" class="form-control porcentaje" step="any" min="0" max="100" value="0"></td>' +
-                        '</tr>';
+                        '</table>';
                     tbody.append(fila);
                 });
-                actualizarSuma();
+                actualizarResumen();
             } else {
                 $('#tabla-colonias-container').hide();
+                $('#resumen-cant-colonias').val(0);
+                $('#hidden-cant-colonias').val(0);
+                actualizarResumen();
             }
         });
     } else {
         $('#tabla-colonias-container').hide();
+        $('#resumen-cant-colonias').val(0);
+        $('#hidden-cant-colonias').val(0);
+        actualizarResumen();
     }
 });
 
-function actualizarSuma() {
+// Función para actualizar el resumen (suma, efectividad, cantidad de colonias)
+function actualizarResumen() {
     var suma = 0;
+    var numColonias = $('.porcentaje').length;
     $('.porcentaje').each(function() {
         var val = parseFloat($(this).val());
         if(!isNaN(val)) suma += val;
     });
-    var numColonias = $('.porcentaje').length;
     var maximo = numColonias * 100;
-    var efectividad = (suma / maximo) * 100;
-    $('#suma-porcentajes').html('Suma de porcentajes: ' + suma + ' / ' + maximo + ' | Efectividad: ' + efectividad.toFixed(2) + '%');
+    var efectividad = (maximo > 0) ? (suma / maximo) * 100 : 0;
+    
+    // Actualizar campos visibles en el resumen
+    $('#resumen-cant-colonias').val(numColonias);
+    $('#resumen-suma-porcentajes').val(suma.toFixed(2));
+    $('#resumen-efectividad').val(efectividad.toFixed(2) + '%');
+    
+    // Actualizar campos ocultos para enviar al servidor
+    $('#hidden-cant-colonias').val(numColonias);
+    $('#hidden-suma-porcentajes').val(suma.toFixed(2));
+    $('#hidden-efectividad').val(efectividad.toFixed(2));
+    $('#hidden-efectividad2').val(efectividad.toFixed(2));
+    
+    // Actualizar también el div de alerta
+    $('#suma-porcentajes').html('Suma de porcentajes: ' + suma.toFixed(2) + ' / ' + maximo + ' | Efectividad: ' + efectividad.toFixed(2) + '%');
 }
 
+// Recalcular cada vez que cambia un porcentaje
 $(document).on('change', '.porcentaje', function() {
-    actualizarSuma();
+    actualizarResumen();
+});
+
+// Cargar unidades según tipo
+$('#tipo-unidad').change(function() {
+    var id_tipo = $(this).val();
+    if(id_tipo) {
+        $.get('{$urlGetUnidades}&id_tipo=' + id_tipo, function(data) {
+            $('#num-unidad').html(data);
+        });
+    } else {
+        $('#num-unidad').html('<option>Seleccione tipo primero</option>');
+    }
 });
 JS;
 $this->registerJs($script);

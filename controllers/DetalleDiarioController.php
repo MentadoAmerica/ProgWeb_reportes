@@ -69,7 +69,7 @@ class DetalleDiarioController extends Controller
                 $model->fecha_captura = date('Y-m-d H:i:s');
                 $model->id_usuario = 1; // Cambiar después por Yii::$app->user->id
 
-                // 3. Guardar el modelo principal (sin colonias aún)
+                // 3. Guardar el modelo principal (sin colonias aún) - usamos save(false) para omitir validaciones
                 if (!$model->save(false)) {
                     throw new \Exception('No se pudo guardar el registro principal');
                 }
@@ -130,6 +130,7 @@ class DetalleDiarioController extends Controller
         ]);
     }
 
+    // Acciones AJAX (getUnidades, getColonias, etc.) igual que antes...
     public function actionGetUnidades($id_tipo)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
