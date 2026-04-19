@@ -15,7 +15,7 @@ class DetalleDiarioSearch extends DetalleDiario
     public function rules()
     {
         return [
-            [['id_folio', 'turno', 'id_tipo_unidad', 'id_unidad', 'id_ruta', 'id_chofer', 'id_despachador', 'cant_colonias'], 'integer'],
+            [['id_folio', 'turno', 'id_tipo_unidad', 'id_unidad', 'id_ruta', 'id_chofer', 'id_despachador', 'cant_colonias', 'id_usuario'], 'integer'],
             [['fecha_orden', 'fecha_captura', 'comentarios', 'nombre_colonia', 'fecha_desde', 'fecha_hasta'], 'safe'],
             [['cantidad_kg', 'porcentaje_efectividad', 'km_salir', 'km_entrar', 'suma_por_atendida', 'por_realizado'], 'number'],
         ];
@@ -65,6 +65,7 @@ class DetalleDiarioSearch extends DetalleDiario
             'detalle_diario.id_unidad' => $this->id_unidad,
             'detalle_diario.id_ruta' => $this->id_ruta,
             'detalle_diario.id_chofer' => $this->id_chofer,
+             'detalle_diario.id_usuario' => $this->id_usuario, 
             'detalle_diario.id_despachador' => $this->id_despachador,
             'detalle_diario.cantidad_kg' => $this->cantidad_kg,
         ]);
