@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
 /*main > .container {
     padding: 70px 15px 20px;
 }
@@ -86,12 +88,13 @@ a.desc:after {
 .form-group {
     margin-bottom: 1rem;
 }
+
 /* web/css/site.css - Estilos personalizados para el sistema de reportes */
 
 /* Fondo general y tipografía */
 body {
     background-color: #fdf8f0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Varela Round', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Contenedor principal del formulario */
@@ -195,4 +198,199 @@ label {
 .navbar-guindo .navbar-brand:hover,
 .navbar-guindo .navbar-nav .nav-link:hover {
     color: #ffccaa !important;
+}
+
+/* Contenedor de la tabla con bordes redondeados y sombra */
+.grid-view {
+    background: white !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 30px rgba(98, 17, 50, 0.15) !important;
+    border: 1px solid #f0e0d0 !important;
+    margin-bottom: 30px !important;
+}
+
+/* Layout interno del GridView */
+.grid-view .summary {
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #f0e0d0 !important;
+    color: #621132 !important;
+    font-size: 14px !important;
+    background-color: white !important;
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+/* Estilos de filas de tabla */
+.table tbody tr:hover {
+    background-color: #f9e4d4 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #fdf8f4 !important;
+}
+
+.table tbody td {
+    padding: 12px !important;
+    vertical-align: middle !important;
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+/* Paginación */
+.pagination {
+    margin: 0 !important;
+    padding: 15px 20px !important;
+    border-top: 1px solid #f0e0d0 !important;
+    justify-content: center !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #621132 !important;
+    border-color: #621132 !important;
+    color: white !important;
+}
+
+.pagination .page-link {
+    color: #621132 !important;
+    padding: 8px 12px !important;
+    border-radius: 5px !important;
+    margin: 0 3px !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #f9e4d4 !important;
+    color: #621132 !important;
+    border-color: #d4a373 !important;
+}
+
+/* Inputs de filtro en cabecera de tabla */
+.table thead input.form-control,
+.table thead select.form-control {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    margin-top: 5px !important;
+    width: 100% !important;
+}
+
+.table thead input.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.table thead input.form-control:focus,
+.table thead select.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-color: white !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2) !important;
+    outline: none !important;
+}
+
+/* Cabecera de tabla mejorada */
+.table thead th {
+    padding: 15px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 13px !important;
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+/* Botones de acción en tabla */
+.table .btn-sm {
+    margin: 0 3px !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    transition: all 0.2s ease !important;
+}
+
+.table .btn-sm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Botones de acción con colores guindo */
+.btn-view {
+    background-color: #621132 !important;
+    color: white !important;
+}
+
+.btn-view:hover {
+    background-color: #800020 !important;
+    color: white !important;
+}
+
+.btn-edit {
+    background-color: #d4a373 !important;
+    color: white !important;
+}
+
+.btn-edit:hover {
+    background-color: #e8b888 !important;
+    color: white !important;
+}
+
+.btn-delete {
+    background-color: #800020 !important;
+    color: white !important;
+}
+
+.btn-delete:hover {
+    background-color: #a00028 !important;
+    color: white !important;
+}
+
+/* Colores de texto guindo */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+.text-guindo {
+    color: #621132 !important;
+}
+
+/* Títulos con color guindo */
+h2 {
+    color: #621132 !important;
+}
+
+/* Asegurar que los inputs de filtro sean visibles */
+.grid-view .filters input.form-control,
+.grid-view .filters select.form-control {
+    display: block !important;
+    width: 100% !important;
+    height: 34px !important;
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+    line-height: 1.42857143 !important;
+    color: #555 !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    border: 1px solid #d4a373 !important;
+    border-radius: 5px !important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+    font-family: 'Varela Round', sans-serif !important;
+}
+
+.grid-view .filters input.form-control:focus {
+    border-color: #621132 !important;
+    box-shadow: 0 0 5px rgba(98, 17, 50, 0.3) !important;
+}
+
+/* Alineación de números a la derecha */
+.text-right {
+    text-align: right !important;
+}
+
+/* Mostrar total de colonias */
+.grid-view .summary {
+    display: block !important;
+}
+
+/* Corrección para el contador de total */
+.summary b {
+    color: #621132 !important;
 }

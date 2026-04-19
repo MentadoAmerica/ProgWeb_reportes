@@ -77,7 +77,7 @@ class ColoniaController extends Controller
 
     /**
      * Creates a new Colonia model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -86,7 +86,10 @@ class ColoniaController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id_colonia' => $model->id_colonia]);
+                Yii::$app->session->setFlash('success', '¡La colonia "' . $model->nombre_colonia . '" se ha creado correctamente!');
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'No se pudo crear la colonia. Verifica los datos ingresados.');
             }
         } else {
             $model->loadDefaultValues();
@@ -99,7 +102,7 @@ class ColoniaController extends Controller
 
     /**
      * Updates an existing Colonia model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param int $id_colonia Id Colonia
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -109,7 +112,8 @@ class ColoniaController extends Controller
         $model = $this->findModel($id_colonia);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_colonia' => $model->id_colonia]);
+            Yii::$app->session->setFlash('success', '¡La colonia "' . $model->nombre_colonia . '" se ha actualizado correctamente!');
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -126,7 +130,14 @@ class ColoniaController extends Controller
      */
     public function actionDelete($id_colonia)
     {
-        $this->findModel($id_colonia)->delete();
+        $model = $this->findModel($id_colonia);
+        $nombre = $model->nombre_colonia;
+        
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', '¡La colonia "' . $nombre . '" se ha eliminado correctamente!');
+        } else {
+            Yii::$app->session->setFlash('error', 'No se pudo eliminar la colonia. Verifica que no tenga reportes asociados.');
+        }
 
         return $this->redirect(['index']);
     }
@@ -144,6 +155,6 @@ class ColoniaController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('La página solicitada no existe.');
     }
 }

@@ -10,35 +10,188 @@ use yii\grid\GridView;
 /** @var app\models\ChoferSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Chofers';
+$this->title = 'Choferes';
 $this->params['breadcrumbs'][] = $this->title;
+
+$currentSort = Yii::$app->request->get('sort', '');
 ?>
+
 <div class="chofer-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <!-- Encabezado -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="color: #621132; font-weight: 600; margin-bottom: 5px; font-family: 'Varela Round', sans-serif; font-size: 32px;">
+                <i class="fas fa-user" style="margin-right: 10px; color: #621132;"></i>
+                <?= Html::encode($this->title) ?>
+            </h2>
+            <p style="color: #7a6a5a; margin: 0; font-size: 16px; font-family: 'Varela Round', sans-serif;">
+                <i class="fas fa-info-circle" style="margin-right: 5px; color: #621132;"></i>
+                Administra los choferes y sus datos
+            </p>
+        </div>
+        <div>
+            <?= Html::a(
+                '<i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Crear Chofer', 
+                ['create'], 
+                [
+                    'style' => 'background-color: #621132; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.2); text-decoration: none;',
+                    'onmouseover' => 'this.style.backgroundColor="#800020"; this.style.transform="translateY(-2px)"; this.style.boxShadow="0 6px 12px rgba(128, 0, 32, 0.3)";',
+                    'onmouseout' => 'this.style.backgroundColor="#621132"; this.style.transform="translateY(0)"; this.style.boxShadow="0 4px 8px rgba(98, 17, 50, 0.2)";'
+                ]
+            ) ?>
+        </div>
+    </div>
 
-    <p>
-        <?= Html::a('Create Chofer', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <!-- Filtros y Ordenamiento -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <?php
+            $sortCycle = [
+                '' => ['label' => 'Ordenar por...', 'icon' => 'fa-sort', 'next' => 'nombre'],
+                'nombre' => ['label' => 'Nombre (A-Z)', 'icon' => 'fa-arrow-up-a-z', 'next' => '-nombre'],
+                '-nombre' => ['label' => 'Nombre (Z-A)', 'icon' => 'fa-arrow-down-z-a', 'next' => 'apellido'],
+                'apellido' => ['label' => 'Apellido (A-Z)', 'icon' => 'fa-arrow-up-a-z', 'next' => '-apellido'],
+                '-apellido' => ['label' => 'Apellido (Z-A)', 'icon' => 'fa-arrow-down-z-a', 'next' => ''],
+            ];
+            
+            $current = $currentSort ?: '';
+            $nextSort = $sortCycle[$current]['next'] ?? '';
+            $currentLabel = $sortCycle[$current]['label'] ?? 'Ordenar por...';
+            $currentIcon = $sortCycle[$current]['icon'] ?? 'fa-sort';
+            ?>
+            
+            <?= Html::a(
+                '<i class="fas ' . $currentIcon . '" style="margin-right: 8px;"></i>' . $currentLabel, 
+                $nextSort ? array_merge(['index'], Yii::$app->request->queryParams, ['sort' => $nextSort]) : ['index'], 
+                [
+                    'class' => 'btn',
+                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 9px 20px; border-radius: 30px; font-family: "Varela Round", sans-serif; font-size: 14px; transition: all 0.2s ease; text-decoration: none; box-shadow: 0 2px 6px rgba(98, 17, 50, 0.08);',
+                    'onmouseover' => 'this.style.backgroundColor="#f9e4d4"; this.style.borderColor="#621132";',
+                    'onmouseout' => 'this.style.backgroundColor="white"; this.style.borderColor="#d4a373";'
+                ]
+            ) ?>
+            
+            <?php if ($currentSort): ?>
+                <?= Html::a(
+                    '<i class="fas fa-times"></i>', 
+                    array_merge(['index'], Yii::$app->request->queryParams, ['sort' => null]), 
+                    [
+                        'class' => 'btn',
+                        'style' => 'background: white; border: 1px solid #dc3545; color: #dc3545; width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;',
+                        'title' => 'Limpiar ordenamiento',
+                        'onmouseover' => 'this.style.backgroundColor="#f8d7da";',
+                        'onmouseout' => 'this.style.backgroundColor="white";'
+                    ]
+                ) ?>
+            <?php endif; ?>
+        </div>
+        
+        <div>
+            <?= Html::a(
+                '<i class="fas fa-undo-alt" style="margin-right: 5px;"></i> Limpiar filtros', 
+                ['index'], 
+                [
+                    'class' => 'btn', 
+                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 9px 18px; border-radius: 30px; font-family: "Varela Round", sans-serif; font-size: 14px;',
+                    'onmouseover' => 'this.style.backgroundColor="#f9e4d4";',
+                    'onmouseout' => 'this.style.backgroundColor="white";'
+                ]
+            ) ?>
+        </div>
+    </div>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id_chofer',
-            'nombre_chofer',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Chofer $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id_chofer' => $model->id_chofer]);
-                 }
+    <!-- Tabla -->
+    <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(98, 17, 50, 0.15); border: 1px solid #f0e0d0;">
+        <?= GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'tableOptions' => ['class' => 'table table-hover', 'style' => 'margin-bottom: 0; font-size: 15px;'],
+            'layout' => "
+                <div style='padding: 15px 20px; border-bottom: 1px solid #f0e0d0; background: white;'>
+                    <div style='display: flex; justify-content: space-between; align-items: center;'>
+                        <div style='color: #621132; font-size: 16px; font-family: \"Varela Round\", sans-serif;'>
+                            <i class='fas fa-list' style='margin-right: 8px; color: #621132;'></i>
+                            Total: <b>".$dataProvider->getTotalCount()."</b> choferes
+                        </div>
+                        <div style='color: #621132; font-size: 16px; font-family: \"Varela Round\", sans-serif;'>
+                            <i class='fas fa-eye' style='margin-right: 8px; color: #621132;'></i>
+                            Mostrando <b>".$dataProvider->getCount()."</b> de <b>".$dataProvider->getTotalCount()."</b>
+                        </div>
+                    </div>
+                </div>
+                {items}
+                <div style='padding: 15px 20px; border-top: 1px solid #f0e0d0; text-align: center; background: white;'>
+                    {pager}
+                </div>
+            ",
+            'summary' => '',
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'nombre',
+                    'enableSorting' => false,
+                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
+                    'contentOptions' => ['style' => 'font-weight: 500;'],
+                ],
+                [
+                    'attribute' => 'apellido',
+                    'enableSorting' => false,
+                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
+                    'contentOptions' => ['style' => 'font-weight: 500;'],
+                ],
+                [
+                    'attribute' => 'telefono',
+                    'enableSorting' => false,
+                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
+                ],
+                [
+                    'class' => ActionColumn::className(),
+                    'header' => 'Acciones',
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; text-align: center;'],
+                    'contentOptions' => ['style' => 'text-align: center;'],
+                    'template' => '{view} {update} {delete}',
+                    'buttons' => [
+                        'view' => function ($url) {
+                            return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                'class' => 'btn btn-sm',
+                                'style' => 'background: #5a3a2a; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'title' => 'Ver',
+                            ]);
+                        },
+                        'update' => function ($url) {
+                            return Html::a('<i class="fas fa-edit"></i>', $url, [
+                                'class' => 'btn btn-sm',
+                                'style' => 'background: #d4a373; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'title' => 'Editar',
+                            ]);
+                        },
+                        'delete' => function ($url) {
+                            return Html::a('<i class="fas fa-trash"></i>', $url, [
+                                'class' => 'btn btn-sm',
+                                'style' => 'background: #800020; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'title' => 'Eliminar',
+                                'data-confirm' => '¿Estás seguro de eliminar este chofer?',
+                                'data-method' => 'post',
+                            ]);
+                        },
+                    ],
+                    'urlCreator' => function ($action, Chofer $model) {
+                        return Url::toRoute([$action, 'id_chofer' => $model->id_chofer]);
+                    }
+                ],
             ],
-        ],
-    ]); ?>
-
-
+            'pager' => [
+                'options' => ['class' => 'pagination'],
+                'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+                'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+            ],
+        ]); ?>
+    </div>
 </div>
+<?php
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+?>

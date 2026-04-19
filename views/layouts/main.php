@@ -16,6 +16,10 @@ AppAsset::register($this);
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="<?= Yii::$app->request->baseUrl ?>/images/logo.png">
+    <link rel="shortcut icon" href="<?= Yii::$app->request->baseUrl ?>/images/logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="<?= Yii::$app->request->baseUrl ?>/images/logo.png">
+    
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -81,6 +85,95 @@ AppAsset::register($this);
             color: #611232;
             font-size: 0.9rem;
         }
+        .navbar-brand img {
+            height: 32px;
+        }
+        
+        /* ============================================
+           BOTÓN HAMBURGUESA MEJORADO
+           ============================================ */
+        
+        /* Activar hamburguesa en 992px (más temprano que los 768px por defecto) */
+        @media (max-width: 992px) {
+            .navbar-expand-md .navbar-toggler {
+                display: block !important;
+            }
+            .navbar-expand-md .navbar-collapse {
+                display: none !important;
+            }
+            .navbar-expand-md .navbar-collapse.show {
+                display: block !important;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            .navbar-expand-md .navbar-nav {
+                flex-direction: column !important;
+                width: 100% !important;
+                padding: 10px 0 !important;
+            }
+            .navbar-expand-md .navbar-nav .nav-item {
+                width: 100% !important;
+            }
+            .navbar-expand-md .navbar-nav .nav-link {
+                padding: 12px 15px !important;
+            }
+            .navbar-expand-md .dropdown-menu {
+                position: static !important;
+                float: none !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+                background-color: rgba(255, 255, 255, 0.05) !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 8px !important;
+                padding: 5px 0 !important;
+            }
+            .navbar-expand-md .dropdown-item {
+                color: rgba(255, 255, 255, 0.9) !important;
+                padding: 10px 30px !important;
+            }
+            .navbar-expand-md .dropdown-item i {
+                color: rgba(255, 255, 255, 0.8) !important;
+            }
+            .navbar-expand-md .dropdown-item:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: white !important;
+            }
+            .navbar-expand-md .dropdown-item:hover i {
+                color: white !important;
+            }
+            .navbar-expand-md .dropdown-divider {
+                border-top-color: rgba(255, 255, 255, 0.2) !important;
+            }
+        }
+        
+        /* Botón hamburguesa personalizado - Líneas más gruesas */
+        .navbar-toggler {
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            padding: 8px 10px !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .navbar-toggler:hover {
+            border-color: white !important;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            transform: scale(1.05) !important;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3) !important;
+            outline: none !important;
+        }
+        
+        /* Icono de hamburguesa más grueso */
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            width: 24px !important;
+            height: 24px !important;
+        }
+        
         /* Buscador mejorado */
         .search-form {
             margin-left: 1rem;
@@ -142,14 +235,15 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => '<i class="bi bi-truck"></i> SIRECAM',
+        'brandLabel' => '<img src="' . Yii::$app->request->baseUrl . '/images/logo.png" alt="Logo"> SIRECAM',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar navbar-expand-lg navbar-dark fixed-top',
+            'class' => 'navbar navbar-expand-md navbar-dark fixed-top',
             'style' => 'background-color: #611232;',
         ],
         'togglerOptions' => ['class' => 'navbar-toggler', 'aria-label' => 'Toggle navigation'],
     ]);
+
 
     $menuItems = [];
 
