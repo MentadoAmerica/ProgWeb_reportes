@@ -28,6 +28,21 @@ AppAsset::register($this);
     .navbar-guindo {
         background-color: #800020 !important;
     }
+    .navbar-guindo .navbar-brand,
+    .navbar-guindo .navbar-nav .nav-link {
+        color: #fdf8f0 !important;
+    }
+    .navbar-guindo .navbar-brand:hover,
+    .navbar-guindo .navbar-nav .nav-link:hover {
+        color: #ffccaa !important;
+    }
+    .footer {
+        background-color: #800020;
+        color: #fdf8f0;
+        padding: 10px 0;
+        text-align: center;
+        margin-top: 30px;
+    }
     CSS
     );
     ?>
@@ -50,32 +65,32 @@ AppAsset::register($this);
     $menuItems[] = ['label' => 'Inicio', 'url' => ['/site/index']];
 
     if (Yii::$app->user->isGuest) {
-        // Visitante: mostrar sólo opciones públicas
-        $menuItems[] = ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']];
+        // Visitante: solo puede ver la página de inicio y login/registro
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
         $menuItems[] = ['label' => 'Registro', 'url' => ['/site/signup']];
     } else {
-        // Usuario autenticado: mostrar acciones permitidas
+        // Usuario autenticado: mostrar opciones de reportes
         $menuItems[] = ['label' => 'Crear Reporte', 'url' => ['/detalle-diario/create']];
         $menuItems[] = ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']];
 
         $user = Yii::$app->user->identity;
-        if ($user instanceof \app\models\Usuarios) {
-            if ($user->isAdmin()) {
-                // Admin: acceso a gestión completa
-                $menuItems[] = ['label' => 'Usuarios', 'url' => ['/usuarios/index']];
-                $menuItems[] = ['label' => 'Catálogos', 'items' => [
+        if ($user instanceof \app\models\Usuarios && $user->isAdmin()) {
+            // Admin: gestión de usuarios y catálogos
+            $menuItems[] = ['label' => 'Usuarios', 'url' => ['/usuarios/index']];
+            $menuItems[] = [
+                'label' => 'Catálogos',
+                'items' => [
                     ['label' => 'Rutas', 'url' => ['/ruta/index']],
                     ['label' => 'Colonias', 'url' => ['/colonia/index']],
+                    ['label' => 'Tipos de Unidad', 'url' => ['/tipo-unidad/index']],
                     ['label' => 'Unidades', 'url' => ['/num-unidad/index']],
-                ]];
-            } else {
-                // Operador u otros: menú limitado
-                $menuItems[] = ['label' => 'Mis Reportes', 'url' => ['/detalle-diario/index']];
-            }
+                    ['label' => 'Choferes', 'url' => ['/chofer/index']],
+                    ['label' => 'Despachadores', 'url' => ['/despachador/index']],
+                ],
+            ];
         }
 
-        // Logout como formulario para usar POST
+        // Logout como formulario POST
         $displayName = $user instanceof \app\models\Usuarios ? $user->nombre : Yii::$app->user->id;
         $menuItems[] = '<li class="nav-item">'
             . Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline'])
@@ -100,17 +115,13 @@ AppAsset::register($this);
     </div>
 </main>
 
-<footer class="footer mt-auto py-3">
+<footer class="footer">
     <div class="container">
         <p class="mb-0">&copy; <?= date('Y') ?> Sistema de Reportes de Camiones - Todos los derechos reservados.</p>
     </div>
 </footer>
 
 <?php $this->endBody() ?>
-<?php
-// Depuración: mostrar en consola si jQuery y yii están disponibles
-$this->registerJs("console.log('DEBUG assets: jQuery=', typeof jQuery, ' yii=', typeof yii);");
-?>
 </body>
 </html>
 <?php $this->endPage() ?>

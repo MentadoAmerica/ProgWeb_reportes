@@ -1,53 +1,56 @@
 <?php
+use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-
-$this->title = 'My Yii Application';
+$this->title = 'Bienvenido al Sistema de Reportes de Camiones';
 ?>
-<div class="site-index">
 
-    <div class="jumbotron text-center bg-transparent mt-5 mb-5">
-        <h1 class="display-4">Congratulations!</h1>
+<div class="site-index" style="text-align: center; margin-top: 50px;">
+    <h1><?= Html::encode($this->title) ?></h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+    <div style="background-color: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+        <p style="font-size: 18px; color: #5a3a2a;">
+            Sistema para el registro y control de rutas de recolección de residuos.
+        </p>
 
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+        <!-- Imagen de gobierno -->
+        <div style="margin: 30px 0;">
+            <?= Html::img('https://www.hoytamaulipas.net/fbfoto/298468/Arrendara-gobierno-de-Madero-cuatro-camiones-recolectores-de-basura.jpg', [
+                'alt' => 'Camiones recolectores',
+                'style' => 'max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #800020;',
+            ]) ?>
         </div>
 
+        <div style="margin-top: 30px;">
+            <?php if (Yii::$app->user->isGuest): ?>
+                <p>
+                    <?= Html::a('Iniciar sesión', ['site/login'], ['class' => 'btn btn-guindo', 'style' => 'margin-right: 10px;']) ?>
+                    <?= Html::a('Registrarse', ['site/signup'], ['class' => 'btn btn-default']) ?>
+                </p>
+                <p style="font-size: 14px; color: #888;">
+                    Para acceder a la creación y búsqueda de reportes, debes iniciar sesión.
+                </p>
+            <?php else: ?>
+                <p>
+                    <?= Html::a('Crear nuevo reporte', ['detalle-diario/create'], ['class' => 'btn btn-guindo', 'style' => 'margin-right: 10px;']) ?>
+                    <?= Html::a('Buscar reportes', ['detalle-diario/index'], ['class' => 'btn btn-default']) ?>
+                </p>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
+
+<?php
+// Asegurar que el botón guindo tenga estilo
+$this->registerCss("
+    .btn-guindo {
+        background-color: #800020;
+        border-color: #800020;
+        color: white;
+        font-weight: bold;
+    }
+    .btn-guindo:hover {
+        background-color: #a00028;
+        border-color: #a00028;
+    }
+");
+?>

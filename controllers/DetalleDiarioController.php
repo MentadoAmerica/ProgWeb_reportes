@@ -12,15 +12,33 @@ use app\models\Colonia;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\web\Response;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DetalleDiarioController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'exportar', 'get-unidades', 'get-colonias'],
+                        'roles' => ['@'], // Solo usuarios autenticados
+                    ],
+                ],
+                'denyCallback' => function ($rule, $action) {
+                    Yii::$app->session->setFlash('error', 'Debes iniciar sesión para acceder a esta sección.');
+                    return $this->redirect(['site/login']);
+                },
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -71,6 +89,7 @@ class DetalleDiarioController extends Controller
             $model->suma_por_atendida = $sumaPorcentajesPreview;
             $model->por_realizado = ($model->cant_colonias > 0) ? ($sumaPorcentajesPreview / ($model->cant_colonias * 100)) * 100 : 0;
             $model->porcentaje_efectividad = $model->por_realizado;
+            
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 // 1. Generar nuevo folio desde tabla FOLIO
@@ -163,7 +182,7 @@ class DetalleDiarioController extends Controller
         ]);
     }
 
-    // Acciones AJAX (getUnidades, getColonias, etc.) igual que antes...
+    // Acciones AJAX (getUnidades, getColonias, etc.)
     public function actionGetUnidades($id_tipo)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
