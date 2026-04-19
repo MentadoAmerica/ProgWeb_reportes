@@ -9,9 +9,18 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
-
-// CSS inline para navbar y fondo general
-$this->registerCss("
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <?php $this->registerCsrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+    <?php
+    $this->registerCss(<<<'CSS'
     body {
         background-color: #fdf8f0;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,58 +28,68 @@ $this->registerCss("
     .navbar-guindo {
         background-color: #800020 !important;
     }
-    .navbar-guindo .navbar-brand,
-    .navbar-guindo .navbar-nav .nav-link {
-        color: #fdf8f0 !important;
-    }
-    .navbar-guindo .navbar-brand:hover,
-    .navbar-guindo .navbar-nav .nav-link:hover {
-        color: #ffccaa !important;
-    }
-    .navbar-toggler {
-        background-color: #fdf8f0;
-    }
-    footer {
-        background-color: #800020;
-        color: #fdf8f0;
-        padding: 10px 0;
-        text-align: center;
-        margin-top: 30px;
-    }
-");
-?>
-<?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <?php $this->registerCsrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
+    CSS
+    );
+    ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body>
 <?php $this->beginBody() ?>
 
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => 'Reportes de Camiones',
+        'brandLabel' => 'Sistema de Reportes',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark fixed-top navbar-guindo',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Inicio', 'url' => ['/site/index']],
-        ['label' => 'Crear Reporte', 'url' => ['/detalle-diario/create']],
-        ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']],
-        ['label' => 'Modificar Reporte', 'url' => ['/detalle-diario/index']],
-    ];
+
+    // Construir menú según rol / estado de sesión
+    $menuItems = [];
+    $menuItems[] = ['label' => 'Inicio', 'url' => ['/site/index']];
+
+    if (Yii::$app->user->isGuest) {
+        // Visitante: mostrar sólo opciones públicas
+        $menuItems[] = ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']];
+        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Registro', 'url' => ['/site/signup']];
+    } else {
+        // Usuario autenticado: mostrar acciones permitidas
+        $menuItems[] = ['label' => 'Crear Reporte', 'url' => ['/detalle-diario/create']];
+        $menuItems[] = ['label' => 'Buscar Reportes', 'url' => ['/detalle-diario/index']];
+
+        $user = Yii::$app->user->identity;
+        if ($user instanceof \app\models\Usuarios) {
+            if ($user->isAdmin()) {
+                // Admin: acceso a gestión completa
+                $menuItems[] = ['label' => 'Usuarios', 'url' => ['/usuarios/index']];
+                $menuItems[] = ['label' => 'Catálogos', 'items' => [
+                    ['label' => 'Rutas', 'url' => ['/ruta/index']],
+                    ['label' => 'Colonias', 'url' => ['/colonia/index']],
+                    ['label' => 'Unidades', 'url' => ['/num-unidad/index']],
+                ]];
+            } else {
+                // Operador u otros: menú limitado
+                $menuItems[] = ['label' => 'Mis Reportes', 'url' => ['/detalle-diario/index']];
+            }
+        }
+
+        // Logout como formulario para usar POST
+        $displayName = $user instanceof \app\models\Usuarios ? $user->nombre : Yii::$app->user->id;
+        $menuItems[] = '<li class="nav-item">'
+            . Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline'])
+            . Html::submitButton('Logout (' . Html::encode($displayName) . ')', ['class' => 'btn btn-link nav-link', 'style' => 'color:#fdf8f0; padding:0;'])
+            . Html::endForm()
+            . '</li>';
+    }
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav ms-auto'],
         'items' => $menuItems,
+        'encodeLabels' => false,
     ]);
+
     NavBar::end();
     ?>
 </header>
@@ -81,13 +100,17 @@ $this->registerCss("
     </div>
 </main>
 
-<footer>
+<footer class="footer mt-auto py-3">
     <div class="container">
-        <p>&copy; <?= date('Y') ?> Sistema de Reportes de Camiones - Todos los derechos reservados.</p>
+        <p class="mb-0">&copy; <?= date('Y') ?> Sistema de Reportes de Camiones - Todos los derechos reservados.</p>
     </div>
 </footer>
 
 <?php $this->endBody() ?>
+<?php
+// Depuración: mostrar en consola si jQuery y yii están disponibles
+$this->registerJs("console.log('DEBUG assets: jQuery=', typeof jQuery, ' yii=', typeof yii);");
+?>
 </body>
 </html>
 <?php $this->endPage() ?>

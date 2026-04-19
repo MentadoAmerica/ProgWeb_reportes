@@ -66,7 +66,8 @@ class DetalleDiario extends \yii\db\ActiveRecord
     public function attributes()
     {
         $attributes = parent::attributes();
-        $exclude = ['total_km', 'anio', 'mes', 'dia'];
+        // Exponer todas las columnas de la tabla, excepto campos calculados de búsqueda
+        $exclude = ['anio', 'mes', 'dia'];
         return array_diff($attributes, $exclude);
     }
 
@@ -103,5 +104,21 @@ class DetalleDiario extends \yii\db\ActiveRecord
     public function getUsuario()
     {
         return $this->hasOne(Usuarios::class, ['id' => 'id_usuario']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        // calcular total_km si están disponibles
+        if ($this->hasAttribute('km_salir') && $this->hasAttribute('km_entrar')) {
+            $salir = $this->km_salir;
+            $entrar = $this->km_entrar;
+            if ($salir !== null && $entrar !== null) {
+                $this->total_km = $entrar - $salir;
+            }
+        }
+        return true;
     }
 }

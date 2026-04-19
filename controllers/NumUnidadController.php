@@ -7,6 +7,8 @@ use app\models\NumUnidadSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use Yii;
 
 /**
  * NumUnidadController implements the CRUD actions for NumUnidad model.
@@ -18,17 +20,30 @@ class NumUnidadController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return array_merge(parent::behaviors(), [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function () {
+                            $user = Yii::$app->user->identity;
+                            return $user instanceof \app\models\Usuarios && $user->isAdmin();
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'actions' => ['index', 'view'],
                     ],
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => ['delete' => ['POST']],
+            ],
+        ]);
     }
 
     /**
@@ -40,8 +55,7 @@ class NumUnidadController extends Controller
     {
         $searchModel = new NumUnidadSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
-        return $this->render('index', [
+        return $this->safeRender('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -55,7 +69,7 @@ class NumUnidadController extends Controller
      */
     public function actionView($id_unidad)
     {
-        return $this->render('view', [
+        return $this->safeRender('view', [
             'model' => $this->findModel($id_unidad),
         ]);
     }
@@ -77,9 +91,28 @@ class NumUnidadController extends Controller
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
+        return $this->safeRender('create', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Helper to render views from either `num-unidad` or `num_unidad` folder.
+     */
+    protected function safeRender($view, $params = [])
+    {
+        $viewPathDash = $this->getViewPath() . DIRECTORY_SEPARATOR . $view . '.php';
+        // try default (controller id derived) first
+        if (is_file($viewPathDash)) {
+            return $this->render($view, $params);
+        }
+        // fallback to underscore directory
+        $altPath = Yii::getAlias('@app') . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'num_unidad' . DIRECTORY_SEPARATOR . $view . '.php';
+        if (is_file($altPath)) {
+            return $this->getView()->renderFile($altPath, $params, $this);
+        }
+        // default: let framework throw the original exception
+        return $this->render($view, $params);
     }
 
     /**
@@ -97,7 +130,7 @@ class NumUnidadController extends Controller
             return $this->redirect(['view', 'id_unidad' => $model->id_unidad]);
         }
 
-        return $this->render('update', [
+        return $this->safeRender('update', [
             'model' => $model,
         ]);
     }

@@ -85,7 +85,29 @@ $this->registerCss("
                     <th>Porcentaje (%)</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+                <?php if (!empty(
+                    isset(
+                        $detalleColonias
+                    ) ? $detalleColonias : [])):
+                    $i = 0;
+                    foreach (($detalleColonias ?? []) as $d):
+                        $i++;
+                        $idc = isset($d['id_colonia']) ? $d['id_colonia'] : '';
+                        $hab = isset($d['habitantes']) ? $d['habitantes'] : '';
+                        $por = isset($d['porcentaje']) ? $d['porcentaje'] : 0;
+                ?>
+                    <tr>
+                        <td><?= $i ?></td>
+                        <td><?= Html::encode(isset($d['nombre']) ? $d['nombre'] : $idc) ?>
+                            <input type="hidden" name="detalle_colonias[<?= $i-1 ?>][id_colonia]" value="<?= $idc ?>">
+                            <input type="hidden" name="detalle_colonias[<?= $i-1 ?>][habitantes]" value="<?= $hab ?>">
+                        </td>
+                        <td><?= $hab ?></td>
+                        <td><input type="number" name="detalle_colonias[<?= $i-1 ?>][porcentaje]" class="form-control porcentaje" step="any" min="0" max="100" value="<?= $por ?>"></td>
+                    </tr>
+                <?php endforeach; endif; ?>
+            </tbody>
         </table>
         <div id="suma-porcentajes" class="alert alert-info"></div>
     </div>

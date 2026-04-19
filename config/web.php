@@ -20,8 +20,9 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\\models\\Usuarios',
             'enableAutoLogin' => true,
+            'loginUrl' => ['site/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -42,6 +43,11 @@ $config = [
             ],
         ],
         'db' => $db,
+        'assetManager' => [
+            // Use an explicit filesystem path for basePath to avoid alias-resolution timing issues
+            'basePath' => __DIR__ . '/../web/assets',
+            'baseUrl' => '@web/assets',
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

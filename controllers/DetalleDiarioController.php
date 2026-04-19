@@ -13,6 +13,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DetalleDiarioController extends Controller
 {
@@ -52,6 +54,23 @@ class DetalleDiarioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             $detalleColonias = Yii::$app->request->post('detalle_colonias', []);
+
+            // Populate model hidden fields from posted detalle_colonias so validation preserves data
+            $sumaPorcentajesPreview = 0;
+            $indicePreview = 1;
+            foreach ($detalleColonias as $det) {
+                if ($indicePreview <= 11) {
+                    $model->{"colonia_$indicePreview"} = $det['id_colonia'] ?? null;
+                    $model->{"por_colonia_$indicePreview"} = $det['porcentaje'] ?? 0;
+                    $model->{"habitantes_$indicePreview"} = $det['habitantes'] ?? 0;
+                }
+                $sumaPorcentajesPreview += floatval($det['porcentaje'] ?? 0);
+                $indicePreview++;
+            }
+            $model->cant_colonias = count($detalleColonias);
+            $model->suma_por_atendida = $sumaPorcentajesPreview;
+            $model->por_realizado = ($model->cant_colonias > 0) ? ($sumaPorcentajesPreview / ($model->cant_colonias * 100)) * 100 : 0;
+            $model->porcentaje_efectividad = $model->por_realizado;
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 // 1. Generar nuevo folio desde tabla FOLIO
@@ -62,16 +81,21 @@ class DetalleDiarioController extends Controller
                 } else {
                     $folio->id_folio += 1;
                 }
-                $folio->save();
+                if (!$folio->save()) {
+                    throw new \Exception('No se pudo actualizar folio: ' . json_encode($folio->getErrors()));
+                }
                 $model->id_folio = $folio->id_folio;
 
                 // 2. Asignar valores automáticos
                 $model->fecha_captura = date('Y-m-d H:i:s');
-                $model->id_usuario = 1; // Cambiar después por Yii::$app->user->id
+                // asignar el usuario actual si está autenticado, si no, usar 1 como fallback
+                $model->id_usuario = Yii::$app->user && !Yii::$app->user->isGuest ? (int)Yii::$app->user->id : 1;
 
-                // 3. Guardar el modelo principal (sin colonias aún) - usamos save(false) para omitir validaciones
-                if (!$model->save(false)) {
-                    throw new \Exception('No se pudo guardar el registro principal');
+                // 3. Guardar el modelo principal (validando campos)
+                if (!$model->save()) {
+                    $errors = $model->getErrors();
+                    Yii::error('Error guardando DetalleDiario: ' . json_encode($errors));
+                    throw new \Exception('Validación fallida al guardar el reporte: ' . json_encode($errors));
                 }
 
                 // 4. Procesar colonias y porcentajes
@@ -83,7 +107,10 @@ class DetalleDiarioController extends Controller
                     $reporte->id_folio = $model->id_folio;
                     $reporte->id_colonia = $det['id_colonia'];
                     $reporte->porcentaje_colonia = $det['porcentaje'];
-                    $reporte->save();
+                    if (!$reporte->save()) {
+                        Yii::error('Error guardando ReporteDetalles: ' . json_encode($reporte->getErrors()));
+                        throw new \Exception('No se pudo guardar detalle de colonia: ' . json_encode($reporte->getErrors()));
+                    }
 
                     // Llenar columnas desnormalizadas (hasta 11)
                     if ($indice <= 11) {
@@ -103,7 +130,11 @@ class DetalleDiarioController extends Controller
                 $model->porcentaje_efectividad = $model->por_realizado;
 
                 // Guardar nuevamente con las columnas de colonias actualizadas
-                $model->save(false);
+                if (!$model->save()) {
+                    $errors = $model->getErrors();
+                    Yii::error('Error guardando DetalleDiario (segundo guardado): ' . json_encode($errors));
+                    throw new \Exception('Error al actualizar reporte con colonias: ' . json_encode($errors));
+                }
 
                 $transaction->commit();
                 Yii::$app->session->setFlash('success', 'Reporte guardado con folio ' . $model->id_folio);
@@ -112,6 +143,7 @@ class DetalleDiarioController extends Controller
             } catch (\Exception $e) {
                 $transaction->rollBack();
                 Yii::$app->session->setFlash('error', 'Error al guardar: ' . $e->getMessage());
+                // fallthrough: render form below with $detalleColonias preserved
             }
         }
 
@@ -127,6 +159,7 @@ class DetalleDiarioController extends Controller
             'rutas' => $rutas,
             'choferes' => $choferes,
             'despachadores' => $despachadores,
+            'detalleColonias' => $detalleColonias,
         ]);
     }
 
@@ -170,6 +203,48 @@ class DetalleDiarioController extends Controller
     {
         $this->findModel($id_folio)->delete();
         return $this->redirect(['index']);
+    }
+
+    public function actionExportar()
+    {
+        $searchModel = new DetalleDiarioSearch();
+        $searchModel->load(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Encabezados
+        $headers = ['Folio','Fecha Orden','Fecha Captura','Turno','Tipo','Unidad','Ruta','Chofer','Cantidad (kg)','Total KM'];
+        $col = 'A';
+        foreach ($headers as $h) {
+            $sheet->setCellValue($col . '1', $h);
+            $col++;
+        }
+
+        $row = 2;
+        foreach ($dataProvider->query->all() as $model) {
+            $sheet->setCellValue('A' . $row, $model->id_folio);
+            $sheet->setCellValue('B' . $row, $model->fecha_orden);
+            $sheet->setCellValue('C' . $row, $model->fecha_captura);
+            $sheet->setCellValue('D' . $row, $model->turno);
+            $sheet->setCellValue('E' . $row, $model->tipoUnidad ? $model->tipoUnidad->nombre_tipo : '');
+            $sheet->setCellValue('F' . $row, $model->unidad ? $model->unidad->numero_unidad : '');
+            $sheet->setCellValue('G' . $row, $model->ruta ? $model->ruta->nombre_ruta : '');
+            $sheet->setCellValue('H' . $row, $model->chofer ? $model->chofer->nombre_chofer : '');
+            $sheet->setCellValue('I' . $row, $model->cantidad_kg);
+            $sheet->setCellValue('J' . $row, $model->total_km);
+            $row++;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'detalle_diario_export_' . date('Ymd_His') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        Yii::$app->end();
     }
 
     protected function findModel($id_folio)

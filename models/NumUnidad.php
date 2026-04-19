@@ -67,8 +67,8 @@ class NumUnidad extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getTipoUnidad()
-    {
-        return $this->hasOne(TipoUnidad::class, ['id_tipo_unidad' => 'id_tipo_unidad']);
-    }
+{
+    return $this->hasOne(TipoUnidad::class, ['id_tipo_unidad' => 'id_tipo_unidad']);
+}
 
 }

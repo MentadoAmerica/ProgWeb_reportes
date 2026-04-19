@@ -113,6 +113,7 @@ $this->registerCss("
     <!-- Botón para nuevo reporte -->
     <p>
         <?= Html::a('Crear nuevo reporte', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Exportar a Excel', array_merge(['exportar'], Yii::$app->request->queryParams), ['class' => 'btn btn-primary', 'style' => 'margin-left:10px;']) ?>
     </p>
 
     <!-- GridView con resultados -->

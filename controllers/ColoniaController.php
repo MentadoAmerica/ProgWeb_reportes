@@ -7,6 +7,8 @@ use app\models\ColoniaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use Yii;
 
 /**
  * ColoniaController implements the CRUD actions for Colonia model.
@@ -18,17 +20,30 @@ class ColoniaController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return array_merge(parent::behaviors(), [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function () {
+                            $user = Yii::$app->user->identity;
+                            return $user instanceof \app\models\Usuarios && $user->isAdmin();
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'actions' => ['index', 'view'],
                     ],
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => ['delete' => ['POST']],
+            ],
+        ]);
     }
 
     /**
