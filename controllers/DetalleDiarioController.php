@@ -28,7 +28,7 @@ class DetalleDiarioController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'exportar', 'get-unidades', 'get-colonias'],
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'exportar', 'pdf', 'get-unidades', 'get-colonias'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -382,4 +382,107 @@ class DetalleDiarioController extends Controller
         }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+/**
+ * Exporta a PDF según el tipo solicitado.
+ * - type = 'all' : todos los registros (sin filtros)
+ * - type = 'filtered' : respeta los filtros actuales
+ * - type = 'single' : un solo registro (requiere id_folio)
+ */
+public function actionPdf($type = 'filtered', $id_folio = null)
+{
+    $searchModel = new DetalleDiarioSearch();
+    
+    if ($type === 'single' && $id_folio !== null) {
+        $model = DetalleDiario::findOne($id_folio);
+        if (!$model) {
+            throw new NotFoundHttpException('El reporte no existe.');
+        }
+        $reportes = [$this->formatoReporteCompleto($model)];
+        $titulo = "Reporte Individual - Folio {$model->id_folio}";
+    } elseif ($type === 'all') {
+        $query = DetalleDiario::find()
+            ->joinWith(['tipoUnidad', 'unidad', 'ruta', 'chofer', 'despachador', 'usuario'])
+            ->orderBy(['fecha_orden' => SORT_DESC]);
+        $modelos = $query->all();
+        $reportes = [];
+        foreach ($modelos as $model) {
+            $reportes[] = $this->formatoReporteCompleto($model);
+        }
+        $titulo = "Reporte Completo - Todos los registros";
+    } else {
+        // filtrados
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = false;
+        $modelos = $dataProvider->getModels();
+        $reportes = [];
+        foreach ($modelos as $model) {
+            $reportes[] = $this->formatoReporteCompleto($model);
+        }
+        $titulo = "Reporte Filtrado";
+    }
+
+    // Configurar mPDF
+    $mpdf = new \Mpdf\Mpdf([
+        'mode' => 'utf-8',
+        'format' => 'A4', // Vertical para mejor lectura de detalle
+        'margin_left' => 15,
+        'margin_right' => 15,
+        'margin_top' => 20,
+        'margin_bottom' => 15,
+    ]);
+
+    $html = $this->renderPartial('_pdf', [
+        'reportes' => $reportes,
+        'filtros' => ($type === 'filtered') ? Yii::$app->request->queryParams : [],
+        'fechaGeneracion' => date('d/m/Y H:i:s'),
+        'titulo' => $titulo,
+    ]);
+
+    $mpdf->WriteHTML($html);
+    $mpdf->Output("reporte_camiones_" . date('Ymd_His') . ".pdf", 'D');
+    exit;
+}
+
+/**
+ * Formatea un modelo DetalleDiario para el PDF con todos los campos necesarios
+ */
+private function formatoReporteCompleto($model)
+{
+    return [
+        'id_folio' => $model->id_folio,
+        'fecha_orden' => $model->fecha_orden,
+        'fecha_captura' => $model->fecha_captura,
+        'turno' => $model->turno,
+        'tipo_unidad' => $model->tipoUnidad ? $model->tipoUnidad->nombre_tipo : '',
+        'numero_unidad' => $model->unidad ? $model->unidad->numero_unidad : '',
+        'nombre_ruta' => $model->ruta ? $model->ruta->nombre_ruta : '',
+        'nombre_chofer' => $model->chofer ? $model->chofer->nombre_chofer : '',
+        'nombre_despachador' => $model->despachador ? $model->despachador->nombre_despachador : '',
+        'usuario_nombre' => $model->usuario ? $model->usuario->nombre : 'Sistema',
+        'cantidad_kg' => $model->cantidad_kg,
+        'porcentaje_efectividad' => $model->porcentaje_efectividad,
+        'comentarios' => $model->comentarios,
+        'num_puches' => $model->num_puches,
+        'km_salir' => $model->km_salir,
+        'km_entrar' => $model->km_entrar,
+        'total_km' => $model->total_km,
+        'diesel_iniciar' => $model->diesel_iniciar,
+        'diesel_terminar' => $model->diesel_terminar,
+        'diesel_cargado' => $model->diesel_cargado,
+        'cant_colonias' => $model->cant_colonias,
+        // Datos de colonias desnormalizados
+        'colonia_1' => $model->colonia_1, 'por_colonia_1' => $model->por_colonia_1,
+        'colonia_2' => $model->colonia_2, 'por_colonia_2' => $model->por_colonia_2,
+        'colonia_3' => $model->colonia_3, 'por_colonia_3' => $model->por_colonia_3,
+        'colonia_4' => $model->colonia_4, 'por_colonia_4' => $model->por_colonia_4,
+        'colonia_5' => $model->colonia_5, 'por_colonia_5' => $model->por_colonia_5,
+        'colonia_6' => $model->colonia_6, 'por_colonia_6' => $model->por_colonia_6,
+        'colonia_7' => $model->colonia_7, 'por_colonia_7' => $model->por_colonia_7,
+        'colonia_8' => $model->colonia_8, 'por_colonia_8' => $model->por_colonia_8,
+        'colonia_9' => $model->colonia_9, 'por_colonia_9' => $model->por_colonia_9,
+        'colonia_10' => $model->colonia_10, 'por_colonia_10' => $model->por_colonia_10,
+        'colonia_11' => $model->colonia_11, 'por_colonia_11' => $model->por_colonia_11,
+    ];
+}
 }

@@ -4,19 +4,154 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
-// CSS inline (opcional)
 $this->registerCss("
-    body { background-color: #fdf8f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .detalle-diario-form { background-color: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-    .btn-guindo { background-color: #800020 !important; border-color: #800020 !important; color: white !important; font-weight: bold; }
-    .btn-guindo:hover { background-color: #a00028 !important; border-color: #a00028 !important; }
-    .form-control:focus { border-color: #800020 !important; box-shadow: 0 0 5px rgba(128,0,32,0.3) !important; }
-    .table thead { background-color: #800020 !important; color: white !important; }
-    .table-striped>tbody>tr:nth-of-type(odd) { background-color: #f9e4d4 !important; }
-    label { font-weight: 600 !important; color: #5a3a2a !important; }
-    .alert-info { background-color: #e6ccb3 !important; border-color: #d4a373 !important; color: #5a3a2a !important; }
-    .resumen-panel { background-color: #f9e4d4; border-left: 5px solid #800020; padding: 15px; margin-top: 20px; border-radius: 8px; }
-    .resumen-panel h4 { color: #800020; margin-top: 0; }
+    :root {
+        --primary: #800020;
+        --primary-light: #f9e6e9;
+        --primary-dark: #5c0016;
+        --gray-bg: #faf9f8;
+    }
+
+    body {
+        background: var(--gray-bg);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .detalle-diario-form {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 32px;
+        box-shadow: 0 20px 35px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
+        padding: 2rem;
+        border: 1px solid rgba(128,0,32,0.08);
+    }
+
+    /* Encabezado de secciones */
+    h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin: 1.5rem 0 1rem;
+        border-left: 4px solid var(--primary);
+        padding-left: 0.75rem;
+    }
+
+    /* Campos de formulario */
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 20px;
+        border: 1px solid #e0e0e0;
+        padding: 0.5rem 1rem;
+        transition: 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(128,0,32,0.15);
+    }
+
+    /* Botón principal */
+    .btn-guindo {
+        background: var(--primary);
+        border: none;
+        border-radius: 40px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s;
+        color: white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn-guindo:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(128,0,32,0.2);
+    }
+
+    /* Tabla de colonias */
+    .table {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .table thead th {
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: none;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: var(--primary-light);
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: white;
+    }
+
+    /* Resumen panel */
+    .resumen-panel {
+        background: linear-gradient(135deg, #fff5ee, #fef0e6);
+        border-radius: 24px;
+        padding: 1.25rem 1.5rem;
+        margin-top: 1.5rem;
+        border: 1px solid rgba(128,0,32,0.15);
+        box-shadow: 0 8px 20px rgba(128,0,32,0.05);
+    }
+
+    .resumen-panel h4 {
+        margin-top: 0;
+        border-left-color: var(--primary);
+    }
+
+    .resumen-panel input {
+        background: white;
+        border: 1px solid #e0c8b8;
+        font-weight: 600;
+        color: var(--primary);
+        text-align: center;
+    }
+
+    /* Alerta de suma */
+    .alert-info {
+        background: var(--primary-light);
+        border: 1px solid #d4a373;
+        border-radius: 20px;
+        color: var(--primary-dark);
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Ajustes responsivos */
+    @media (max-width: 768px) {
+        .detalle-diario-form {
+            padding: 1rem;
+        }
+        .resumen-panel .row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
 ");
 ?>
 
@@ -112,7 +247,7 @@ $this->registerCss("
         <div id="suma-porcentajes" class="alert alert-info"></div>
     </div>
 
-    <!-- PANEL DE RESUMEN (CAMPOS CALCULADOS VISIBLES) -->
+    <!-- PANEL DE RESUMEN -->
     <div class="resumen-panel">
         <h4>Resumen del reporte (datos automáticos)</h4>
         <div class="row">
@@ -139,10 +274,9 @@ $this->registerCss("
         </div>
     </div>
 
-    <!-- CAMPOS OCULTOS (para enviar los valores al servidor) -->
+    <!-- CAMPOS OCULTOS -->
     <?= $form->field($model, 'id_folio')->hiddenInput(['id' => 'hidden-id-folio'])->label(false) ?>
     <?= $form->field($model, 'fecha_captura')->hiddenInput(['id' => 'hidden-fecha-captura'])->label(false) ?>
-    <!-- NOTA: total_km, anio, mes, dia NO se incluyen porque son generados por la BD -->
     <?= $form->field($model, 'cant_colonias')->hiddenInput(['id' => 'hidden-cant-colonias'])->label(false) ?>
     <?= $form->field($model, 'suma_por_atendida')->hiddenInput(['id' => 'hidden-suma-porcentajes'])->label(false) ?>
     <?= $form->field($model, 'por_realizado')->hiddenInput(['id' => 'hidden-efectividad'])->label(false) ?>
@@ -163,16 +297,12 @@ $this->registerCss("
 <?php
 $urlGetUnidades = Url::to(['detalle-diario/get-unidades']);
 $urlGetColonias = Url::to(['detalle-diario/get-colonias']);
-
-// Fecha y hora actual para mostrar en el resumen
 $fechaActual = date('Y-m-d H:i:s');
 
 $script = <<<JS
-// Mostrar fecha de captura actual en el campo de resumen
 $('#resumen-fecha-captura').val('$fechaActual');
 $('#hidden-fecha-captura').val('$fechaActual');
 
-// Al seleccionar ruta, actualizar la tabla y la cantidad de colonias
 $('#ruta').change(function() {
     var id_ruta = $(this).val();
     if(id_ruta) {
@@ -190,7 +320,7 @@ $('#ruta').change(function() {
                         '</td>' +
                         '<td>' + colonia.habitantes + '</td>' +
                         '<td><input type="number" name="detalle_colonias['+index+'][porcentaje]" class="form-control porcentaje" step="any" min="0" max="100" value="0"></td>' +
-                        '</table>';
+                        '</tr>';
                     tbody.append(fila);
                 });
                 actualizarResumen();
@@ -209,7 +339,6 @@ $('#ruta').change(function() {
     }
 });
 
-// Función para actualizar el resumen (suma, efectividad, cantidad de colonias)
 function actualizarResumen() {
     var suma = 0;
     var numColonias = $('.porcentaje').length;
@@ -220,27 +349,22 @@ function actualizarResumen() {
     var maximo = numColonias * 100;
     var efectividad = (maximo > 0) ? (suma / maximo) * 100 : 0;
     
-    // Actualizar campos visibles en el resumen
     $('#resumen-cant-colonias').val(numColonias);
     $('#resumen-suma-porcentajes').val(suma.toFixed(2));
     $('#resumen-efectividad').val(efectividad.toFixed(2) + '%');
     
-    // Actualizar campos ocultos para enviar al servidor
     $('#hidden-cant-colonias').val(numColonias);
     $('#hidden-suma-porcentajes').val(suma.toFixed(2));
     $('#hidden-efectividad').val(efectividad.toFixed(2));
     $('#hidden-efectividad2').val(efectividad.toFixed(2));
     
-    // Actualizar también el div de alerta
     $('#suma-porcentajes').html('Suma de porcentajes: ' + suma.toFixed(2) + ' / ' + maximo + ' | Efectividad: ' + efectividad.toFixed(2) + '%');
 }
 
-// Recalcular cada vez que cambia un porcentaje
 $(document).on('change', '.porcentaje', function() {
     actualizarResumen();
 });
 
-// Cargar unidades según tipo
 $('#tipo-unidad').change(function() {
     var id_tipo = $(this).val();
     if(id_tipo) {
