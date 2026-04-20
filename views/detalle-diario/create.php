@@ -9,7 +9,7 @@ use yii\helpers\Html;
 /** @var app\models\Chofer[] $choferes */
 /** @var app\models\Despachador[] $despachadores */
 
-$this->title = 'Nuevo Reporte';
+/**$this->title = 'Nuevo Reporte';**/
 $this->params['breadcrumbs'][] = ['label' => 'Reportes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

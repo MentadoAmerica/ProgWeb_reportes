@@ -10,24 +10,28 @@ $this->registerCss("
         --primary-light: #f9e6e9;
         --primary-dark: #5c0016;
         --gray-bg: #faf9f8;
-    }
-
-    body {
-        background: var(--gray-bg);
-        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --card-shadow: 0 20px 35px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .detalle-diario-form {
         max-width: 1400px;
         margin: 0 auto;
+        padding: 2rem;
         background: white;
         border-radius: 32px;
-        box-shadow: 0 20px 35px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
-        padding: 2rem;
+        box-shadow: var(--card-shadow);
         border: 1px solid rgba(128,0,32,0.08);
     }
 
-    /* Encabezado de secciones */
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.01em;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Secciones */
     h4 {
         font-size: 1.2rem;
         font-weight: 600;
@@ -64,17 +68,19 @@ $this->registerCss("
         box-shadow: 0 0 0 0.2rem rgba(128,0,32,0.15);
     }
 
-    /* Botón principal */
+    /* Botones */
     .btn-guindo {
         background: var(--primary);
         border: none;
         border-radius: 40px;
-        padding: 0.6rem 1.5rem;
+        padding: 0.5rem 1.5rem;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.9rem;
         transition: all 0.2s;
         color: white;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .btn-guindo:hover {
@@ -83,11 +89,30 @@ $this->registerCss("
         box-shadow: 0 4px 12px rgba(128,0,32,0.2);
     }
 
+    .btn-cafe {
+        background: #5a3a2a;
+        border: none;
+        border-radius: 40px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-cafe:hover {
+        background: #7a4a2a;
+        transform: translateY(-1px);
+    }
+
     /* Tabla de colonias */
     .table {
         border-radius: 20px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        margin-top: 1rem;
     }
 
     .table thead th {
@@ -108,7 +133,7 @@ $this->registerCss("
         background-color: white;
     }
 
-    /* Resumen panel */
+    /* Panel de resumen */
     .resumen-panel {
         background: linear-gradient(135deg, #fff5ee, #fef0e6);
         border-radius: 24px;
@@ -156,6 +181,8 @@ $this->registerCss("
 ?>
 
 <div class="detalle-diario-form">
+    <h1>Nuevo Reporte</h1>
+
     <?php $form = ActiveForm::begin(['id' => 'form-reporte']); ?>
 
     <!-- PRIMERA FILA: 3 COLUMNAS -->
@@ -221,10 +248,7 @@ $this->registerCss("
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty(
-                    isset(
-                        $detalleColonias
-                    ) ? $detalleColonias : [])):
+                <?php if (!empty(isset($detalleColonias) ? $detalleColonias : [])):
                     $i = 0;
                     foreach (($detalleColonias ?? []) as $d):
                         $i++;
@@ -288,7 +312,7 @@ $this->registerCss("
     <?php endfor; ?>
 
     <div class="form-group text-center" style="margin-top: 20px;">
-        <?= Html::submitButton('Guardar Reporte', ['class' => 'btn btn-guindo btn-lg']) ?>
+        <?= Html::submitButton('Guardar Reporte', ['class' => 'btn btn-guindo']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
