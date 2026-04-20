@@ -46,20 +46,18 @@ class DetalleDiarioController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
-        $searchModel = new DetalleDiarioSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->pagination->pageSize = 10;
-
-        $usuarios = Usuarios::find()->all();
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'usuarios' => $usuarios,
-        ]);
-    }
+public function actionIndex()
+{
+    $searchModel = new DetalleDiarioSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    // No establezcas pageSize aquí (ya está en el search model)
+    $usuarios = Usuarios::find()->all();
+    return $this->render('index', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'usuarios' => $usuarios,
+    ]);
+}
 
     public function actionView($id_folio)
     {

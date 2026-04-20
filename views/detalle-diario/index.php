@@ -27,11 +27,6 @@ $this->registerCss("
         --card-shadow: 0 20px 35px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
     }
 
-    body {
-        background: var(--gray-bg);
-        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-
     .detalle-diario-index {
         max-width: 1400px;
         margin: 0 auto;
@@ -172,6 +167,12 @@ $this->registerCss("
         border: none;
     }
 
+    /* Eliminar cualquier estilo de enlace en los encabezados */
+    .table thead th a {
+        color: white;
+        text-decoration: none;
+    }
+
     .table-striped tbody tr:nth-of-type(odd) {
         background-color: var(--primary-light);
     }
@@ -281,10 +282,17 @@ $this->registerCss("
             </div>
         </div>
 
+        <!-- Búsqueda global -->
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <?= $form->field($searchModel, 'globalSearch')->textInput(['placeholder' => 'Folio, unidad, ruta, chofer, despachador, comentarios', 'class' => 'form-control'])->label('Búsqueda general') ?>
+            </div>
+        </div>
+
         <div class="row mt-3">
             <div class="col-md-12 text-end">
                 <?= Html::submitButton('<i class="bi bi-search"></i> Buscar', ['class' => 'btn btn-guindo']) ?>
-                <?= Html::resetButton('<i class="bi bi-arrow-repeat"></i> Limpiar', ['class' => 'btn btn-cafe', 'onclick' => 'window.location.href="'.Yii::$app->urlManager->createUrl(['detalle-diario/index']).'"; return false;']) ?>
+                <?= Html::a('<i class="bi bi-arrow-repeat"></i> Limpiar', ['index'], ['class' => 'btn btn-cafe']) ?>
             </div>
         </div>
 
@@ -298,7 +306,7 @@ $this->registerCss("
         <?= Html::a('<i class="bi bi-file-pdf"></i> Descargar PDF', array_merge(['pdf', 'type' => 'filtered'], Yii::$app->request->queryParams), ['class' => 'btn btn-pdf']) ?>
     </div>
 
-    <!-- GridView -->
+    <!-- GridView con deshabilitación de ordenamiento en todas las columnas -->
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => null,
@@ -310,36 +318,53 @@ $this->registerCss("
             [
                 'attribute' => 'id_folio',
                 'label' => 'Folio',
+                'enableSorting' => false,
             ],
             [
                 'attribute' => 'fecha_orden',
                 'label' => 'Fecha Orden',
                 'format' => ['date', 'php:d/m/Y'],
+                'enableSorting' => false,
             ],
             [
                 'attribute' => 'fecha_captura',
                 'label' => 'Fecha Captura',
                 'format' => ['date', 'php:d/m/Y H:i'],
+                'enableSorting' => false,
             ],
-            'turno',
+            [
+                'attribute' => 'turno',
+                'label' => 'Turno (1-4)',
+                'enableSorting' => false,
+            ],
             [
                 'attribute' => 'id_tipo_unidad',
                 'value' => 'tipoUnidad.nombre_tipo',
                 'label' => 'Tipo',
+                'enableSorting' => false,
             ],
             [
                 'attribute' => 'id_ruta',
                 'value' => 'ruta.nombre_ruta',
                 'label' => 'Ruta',
+                'enableSorting' => false,
             ],
             [
                 'attribute' => 'id_chofer',
                 'value' => 'chofer.nombre_chofer',
                 'label' => 'Chofer',
+                'enableSorting' => false,
             ],
-            'cantidad_kg',
-            'total_km',
-
+            [
+                'attribute' => 'cantidad_kg',
+                'label' => 'Cantidad (kg)',
+                'enableSorting' => false,
+            ],
+            [
+                'attribute' => 'total_km',
+                'label' => 'Total Kilómetros',
+                'enableSorting' => false,
+            ],
             [
                 'class' => ActionColumn::class,
                 'header' => 'Acciones',
