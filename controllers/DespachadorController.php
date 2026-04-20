@@ -86,7 +86,8 @@ class DespachadorController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id_despachador' => $model->id_despachador]);
+                Yii::$app->session->setFlash('success', 'Despachador creado exitosamente!');
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
@@ -109,7 +110,8 @@ class DespachadorController extends Controller
         $model = $this->findModel($id_despachador);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_despachador' => $model->id_despachador]);
+            Yii::$app->session->setFlash('success', 'Despachador actualizado exitosamente!');
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -127,6 +129,7 @@ class DespachadorController extends Controller
     public function actionDelete($id_despachador)
     {
         $this->findModel($id_despachador)->delete();
+        Yii::$app->session->setFlash('success', 'Despachador eliminado exitosamente!');
 
         return $this->redirect(['index']);
     }

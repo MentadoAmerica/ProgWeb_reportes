@@ -4,7 +4,7 @@ use yii\bootstrap5\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuarios */
-/* @var $form yii\bootstrap4\ActiveForm */
+/* @var $form yii\bootstrap5\ActiveForm */
 ?>
 
 <div class="usuarios-form">
@@ -19,8 +19,12 @@ use yii\bootstrap5\ActiveForm;
 
     <?= $form->field($model, 'password')->passwordInput() ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+    <div class="form-group" style="margin-top: 30px; display: flex; gap: 10px;">
+        <?php if ($model->isNewRecord): ?>
+            <?= Html::submitButton('Guardar', ['class' => 'btn', 'style' => 'background-color: #621132; color: white; border: none; padding: 10px 30px; border-radius: 5px; font-weight: 600; cursor: pointer;']) ?>
+        <?php else: ?>
+            <?= Html::submitButton('Actualizar', ['class' => 'btn', 'style' => 'background-color: #621132; color: white; border: none; padding: 10px 30px; border-radius: 5px; font-weight: 600; cursor: pointer;']) ?>
+        <?php endif; ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -77,7 +77,7 @@ class RutaController extends Controller
 
     /**
      * Creates a new Ruta model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -86,7 +86,8 @@ class RutaController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id_ruta' => $model->id_ruta]);
+                Yii::$app->session->setFlash('success', 'Ruta creada exitosamente!');
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
@@ -99,7 +100,7 @@ class RutaController extends Controller
 
     /**
      * Updates an existing Ruta model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param int $id_ruta Id Ruta
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
@@ -109,7 +110,8 @@ class RutaController extends Controller
         $model = $this->findModel($id_ruta);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_ruta' => $model->id_ruta]);
+            Yii::$app->session->setFlash('success', 'Ruta actualizada exitosamente!');
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -127,6 +129,7 @@ class RutaController extends Controller
     public function actionDelete($id_ruta)
     {
         $this->findModel($id_ruta)->delete();
+        Yii::$app->session->setFlash('success', 'Ruta eliminada exitosamente!');
 
         return $this->redirect(['index']);
     }

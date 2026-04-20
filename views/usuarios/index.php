@@ -19,6 +19,16 @@ $isAdmin = Yii::$app->user->identity->isAdmin();
 
 <div class="usuarios-index">
 
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div style="background-color: #f0e0d0; border-left: 4px solid #621132; color: #621132; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-family: 'Varela Round', sans-serif; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(98, 17, 50, 0.1);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+                <span style="font-weight: 500;"><?= Yii::$app->session->getFlash('success') ?></span>
+            </div>
+            <button style="background: none; border: none; color: #621132; cursor: pointer; font-size: 20px; padding: 0;" onclick="this.parentElement.style.display='none';">×</button>
+        </div>
+    <?php endif; ?>
+
     <!-- Encabezado -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
         <div>

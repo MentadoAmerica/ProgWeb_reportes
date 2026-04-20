@@ -54,7 +54,8 @@ class UsuariosController extends Controller
     {
         $model = new Usuarios();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Usuario creado exitosamente!');
+            return $this->redirect(['index']);
         }
         return $this->render('create', ['model' => $model]);
     }
@@ -63,7 +64,8 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Usuario actualizado exitosamente!');
+            return $this->redirect(['index']);
         }
         return $this->render('update', ['model' => $model]);
     }
@@ -71,6 +73,7 @@ class UsuariosController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', 'Usuario eliminado exitosamente!');
         return $this->redirect(['index']);
     }
 

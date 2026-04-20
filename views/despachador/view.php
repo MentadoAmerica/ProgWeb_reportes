@@ -6,32 +6,60 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Despachador $model */
 
-$this->title = $model->id_despachador;
-$this->params['breadcrumbs'][] = ['label' => 'Despachadors', 'url' => ['index']];
+$this->title = 'Información del Despachador ' . $model->id_despachador;
+$this->params['breadcrumbs'][] = ['label' => 'Despachadores', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="despachador-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h2 style="color: #621132; font-weight: 600; margin-bottom: 5px; font-family: 'Varela Round', sans-serif; font-size: 32px;">
+                <i class="fas fa-info-circle" style="margin-right: 10px; color: #621132;"></i>
+                <?= Html::encode($this->title) ?>
+            </h2>
+            <p style="color: #7a6a5a; margin: 0; font-size: 16px; font-family: 'Varela Round', sans-serif;">
+                <i class="fas fa-user-tie" style="margin-right: 5px; color: #621132;"></i>
+                Detalles del despachador registrado
+            </p>
+        </div>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id_despachador' => $model->id_despachador], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id_despachador' => $model->id_despachador], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+        <div>
+            <?= Html::a(
+                '<i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Volver a Despachadores',
+                ['index'],
+                [
+                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 12px 22px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 15px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.08);',
+                    'onmouseover' => 'this.style.backgroundColor="#f9e4d4"; this.style.transform="translateY(-2px)";',
+                    'onmouseout' => 'this.style.backgroundColor="white"; this.style.transform="translateY(0)";'
+                ]
+            ) ?>
+        </div>
+    </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id_despachador',
-            'nombre_despachador',
-        ],
-    ]) ?>
+    <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(98, 17, 50, 0.15); border: 1px solid #f0e0d0;">
+        
+        <div style="padding: 18px 24px; border-bottom: 1px solid #f0e0d0; background: white;">
+            <div style="color: #621132; font-size: 16px; font-family: 'Varela Round', sans-serif;">
+                <i class="fas fa-list" style="margin-right: 8px; color: #621132;"></i>
+                Datos del despachador
+            </div>
+        </div>
+
+        <div style="padding: 30px 25px; background: #fff;">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'id_despachador',
+                    'nombre_despachador',
+                ],
+            ]) ?>
+        </div>
+    </div>
 
 </div>
+
+<?php
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+?>

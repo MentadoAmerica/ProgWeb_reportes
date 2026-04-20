@@ -86,7 +86,8 @@ class ChoferController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id_chofer' => $model->id_chofer]);
+                Yii::$app->session->setFlash('success', 'Chofer creado exitosamente!');
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
@@ -109,7 +110,8 @@ class ChoferController extends Controller
         $model = $this->findModel($id_chofer);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_chofer' => $model->id_chofer]);
+            Yii::$app->session->setFlash('success', 'Chofer actualizado exitosamente!');
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -127,6 +129,7 @@ class ChoferController extends Controller
     public function actionDelete($id_chofer)
     {
         $this->findModel($id_chofer)->delete();
+        Yii::$app->session->setFlash('success', 'Chofer eliminado exitosamente!');
 
         return $this->redirect(['index']);
     }

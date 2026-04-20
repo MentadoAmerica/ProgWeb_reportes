@@ -85,7 +85,8 @@ class NumUnidadController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id_unidad' => $model->id_unidad]);
+                Yii::$app->session->setFlash('success', 'Unidad creada exitosamente!');
+                return $this->redirect(['index']);
             }
         } else {
             $model->loadDefaultValues();
@@ -127,7 +128,8 @@ class NumUnidadController extends Controller
         $model = $this->findModel($id_unidad);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_unidad' => $model->id_unidad]);
+            Yii::$app->session->setFlash('success', 'Unidad actualizada exitosamente!');
+            return $this->redirect(['index']);
         }
 
         return $this->safeRender('update', [
@@ -145,6 +147,7 @@ class NumUnidadController extends Controller
     public function actionDelete($id_unidad)
     {
         $this->findModel($id_unidad)->delete();
+        Yii::$app->session->setFlash('success', 'Unidad eliminada exitosamente!');
 
         return $this->redirect(['index']);
     }

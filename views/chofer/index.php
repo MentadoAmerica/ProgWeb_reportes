@@ -18,6 +18,16 @@ $currentSort = Yii::$app->request->get('sort', '');
 
 <div class="chofer-index">
 
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div style="background-color: #f0e0d0; border-left: 4px solid #621132; color: #621132; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-family: 'Varela Round', sans-serif; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(98, 17, 50, 0.1);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-check-circle" style="font-size: 20px;"></i>
+                <span style="font-weight: 500;"><?= Yii::$app->session->getFlash('success') ?></span>
+            </div>
+            <button style="background: none; border: none; color: #621132; cursor: pointer; font-size: 20px; padding: 0;" onclick="this.parentElement.style.display='none';">×</button>
+        </div>
+    <?php endif; ?>
+
     <!-- Encabezado -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
         <div>
@@ -48,11 +58,9 @@ $currentSort = Yii::$app->request->get('sort', '');
         <div style="display: flex; gap: 10px; align-items: center;">
             <?php
             $sortCycle = [
-                '' => ['label' => 'Ordenar por...', 'icon' => 'fa-sort', 'next' => 'nombre'],
-                'nombre' => ['label' => 'Nombre (A-Z)', 'icon' => 'fa-arrow-up-a-z', 'next' => '-nombre'],
-                '-nombre' => ['label' => 'Nombre (Z-A)', 'icon' => 'fa-arrow-down-z-a', 'next' => 'apellido'],
-                'apellido' => ['label' => 'Apellido (A-Z)', 'icon' => 'fa-arrow-up-a-z', 'next' => '-apellido'],
-                '-apellido' => ['label' => 'Apellido (Z-A)', 'icon' => 'fa-arrow-down-z-a', 'next' => ''],
+                '' => ['label' => 'Ordenar por...', 'icon' => 'fa-sort', 'next' => 'nombre_chofer'],
+                'nombre_chofer' => ['label' => 'Nombre (A-Z)', 'icon' => 'fa-arrow-up-a-z', 'next' => '-nombre_chofer'],
+                '-nombre_chofer' => ['label' => 'Nombre (Z-A)', 'icon' => 'fa-arrow-down-z-a', 'next' => ''],
             ];
             
             $current = $currentSort ?: '';
@@ -129,24 +137,11 @@ $currentSort = Yii::$app->request->get('sort', '');
             'columns' => [
                 ['class' => 'yii\grid\SerialColumn'],
                 [
-                    'attribute' => 'nombre',
+                    'attribute' => 'nombre_chofer',
                     'enableSorting' => false,
                     'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
                     'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
                     'contentOptions' => ['style' => 'font-weight: 500;'],
-                ],
-                [
-                    'attribute' => 'apellido',
-                    'enableSorting' => false,
-                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
-                    'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
-                    'contentOptions' => ['style' => 'font-weight: 500;'],
-                ],
-                [
-                    'attribute' => 'telefono',
-                    'enableSorting' => false,
-                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373;', 'placeholder' => 'Buscar...'],
-                    'headerOptions' => ['style' => 'background-color: #efefef; color: black;'],
                 ],
                 [
                     'class' => ActionColumn::className(),
