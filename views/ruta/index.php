@@ -120,7 +120,7 @@ $currentSort = Yii::$app->request->get('sort', '');
             'layout' => "
                 <div style='padding: 15px 20px; border-bottom: 1px solid #f0e0d0; background: white;'>
                     <div style='display: flex; justify-content: space-between; align-items: center;'>
-                        <div style='color: #621132; font-size: 16px; font-family: \"Varela Round\", sans-serif;'>
+                        <div style='color: #efefef; font-size: 16px; font-family: \"Varela Round\", sans-serif;'>
                             <i class='fas fa-list' style='margin-right: 8px; color: #621132;'></i>
                             Total: <b>".$dataProvider->getTotalCount()."</b> rutas
                         </div>
@@ -140,14 +140,14 @@ $currentSort = Yii::$app->request->get('sort', '');
                 [
                     'class' => 'yii\grid\SerialColumn',
                     'header' => '#',
-                    'headerOptions' => ['style' => 'background-color: #621132; color: white; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'contentOptions' => ['style' => 'text-align: center; font-weight: 600; color: #621132; font-family: "Varela Round", sans-serif; padding: 15px;'],
                 ],
                 [
                     'attribute' => 'id_ruta',
                     'label' => 'ID',
                     'enableSorting' => false,
-                    'headerOptions' => ['style' => 'background-color: #621132; color: white; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'contentOptions' => ['style' => 'text-align: center; font-weight: 500; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'filterInputOptions' => [
                         'class' => 'form-control',
@@ -159,7 +159,7 @@ $currentSort = Yii::$app->request->get('sort', '');
                     'attribute' => 'nombre_ruta',
                     'label' => 'Nombre de la Ruta',
                     'enableSorting' => false,
-                    'headerOptions' => ['style' => 'background-color: #621132; color: white; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'contentOptions' => ['style' => 'font-weight: 500; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'filterInputOptions' => [
                         'class' => 'form-control',
@@ -170,7 +170,7 @@ $currentSort = Yii::$app->request->get('sort', '');
                 [
                     'class' => ActionColumn::className(),
                     'header' => 'Acciones',
-                    'headerOptions' => ['style' => 'background-color: #621132; color: white; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'contentOptions' => ['style' => 'text-align: center; padding: 15px;'],
                     'template' => '{view} {update} {delete}',
                     'buttons' => [
