@@ -56,58 +56,115 @@ $currentSort = Yii::$app->request->get('sort', '');
     <!-- Filtros y Ordenamiento -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
         <div style="display: flex; gap: 10px; align-items: center;">
-            <?php
-            $sortCycle = [
-                '' => ['label' => 'Ordenar por...', 'icon' => 'fa-sort', 'next' => 'numero_unidad'],
-                'numero_unidad' => ['label' => 'Número ↑', 'icon' => 'fa-arrow-up-1-9', 'next' => '-numero_unidad'],
-                '-numero_unidad' => ['label' => 'Número ↓', 'icon' => 'fa-arrow-down-9-1', 'next' => ''],
-            ];
+            <!-- Dropdown de ordenamiento -->
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false" 
+                        style="background: white; border: 1px solid #d4a373; color: #621132; padding: 8px 18px; border-radius: 30px; font-family: 'Varela Round', sans-serif; font-size: 14px; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(98, 17, 50, 0.08);">
+                    <i class="fas fa-arrow-<?= strpos($currentSort, '-') === 0 ? 'down' : 'up' ?>-wide-short" style="margin-right: 8px;"></i>
+                    <?php
+                    $sortLabels = [
+                        'id_unidad' => 'ID (Menor a Mayor)',
+                        '-id_unidad' => 'ID (Mayor a Menor)',
+                        'numero_unidad' => 'Número (Menor a Mayor)',
+                        '-numero_unidad' => 'Número (Mayor a Menor)',
+                    ];
+                    echo $currentSort && isset($sortLabels[$currentSort]) ? $sortLabels[$currentSort] : 'Ordenar por...';
+                    ?>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdown" style="border-radius: 12px; border: 1px solid #f0e0d0; box-shadow: 0 6px 16px rgba(98, 17, 50, 0.12); padding: 8px 0; min-width: 200px;">
+                    <li><h6 class="dropdown-header" style="color: #621132; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px;"><i class="fas fa-hashtag" style="margin-right: 6px;"></i>ID</h6></li>
+                    <li><?= Html::a('<i class="fas fa-arrow-up" style="margin-right: 10px; width: 16px;"></i>Menor a Mayor', ['index', 'sort' => 'id_unidad'] + Yii::$app->request->queryParams, ['class' => 'dropdown-item' . ($currentSort == 'id_unidad' ? ' active' : ''), 'style' => 'padding: 8px 16px; font-family: "Varela Round", sans-serif;']) ?></li>
+                    <li><?= Html::a('<i class="fas fa-arrow-down" style="margin-right: 10px; width: 16px;"></i>Mayor a Menor', ['index', 'sort' => '-id_unidad'] + Yii::$app->request->queryParams, ['class' => 'dropdown-item' . ($currentSort == '-id_unidad' ? ' active' : ''), 'style' => 'padding: 8px 16px; font-family: "Varela Round", sans-serif;']) ?></li>
+                    
+                    <li><hr class="dropdown-divider" style="margin: 5px 0;"></li>
+                    <li><h6 class="dropdown-header" style="color: #621132; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px;"><i class="fas fa-truck" style="margin-right: 6px;"></i>Número</h6></li>
+                    <li><?= Html::a('<i class="fas fa-arrow-up" style="margin-right: 10px; width: 16px;"></i>Menor a Mayor', ['index', 'sort' => 'numero_unidad'] + Yii::$app->request->queryParams, ['class' => 'dropdown-item' . ($currentSort == 'numero_unidad' ? ' active' : ''), 'style' => 'padding: 8px 16px; font-family: "Varela Round", sans-serif;']) ?></li>
+                    <li><?= Html::a('<i class="fas fa-arrow-down" style="margin-right: 10px; width: 16px;"></i>Mayor a Menor', ['index', 'sort' => '-numero_unidad'] + Yii::$app->request->queryParams, ['class' => 'dropdown-item' . ($currentSort == '-numero_unidad' ? ' active' : ''), 'style' => 'padding: 8px 16px; font-family: "Varela Round", sans-serif;']) ?></li>
+                    
+                    <?php if ($currentSort): ?>
+                    <li><hr class="dropdown-divider" style="margin: 5px 0;"></li>
+                    <li><?= Html::a('<i class="fas fa-times" style="margin-right: 10px;"></i>Limpiar ordenamiento', array_merge(['index'], Yii::$app->request->queryParams, ['sort' => null]), ['class' => 'dropdown-item text-danger', 'style' => 'padding: 8px 16px; font-family: "Varela Round", sans-serif;']) ?></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
             
-            $current = $currentSort ?: '';
-            $nextSort = $sortCycle[$current]['next'] ?? '';
-            $currentLabel = $sortCycle[$current]['label'] ?? 'Ordenar por...';
-            $currentIcon = $sortCycle[$current]['icon'] ?? 'fa-sort';
-            ?>
-            
-            <?= Html::a(
-                '<i class="fas ' . $currentIcon . '" style="margin-right: 8px;"></i>' . $currentLabel, 
-                $nextSort ? array_merge(['index'], Yii::$app->request->queryParams, ['sort' => $nextSort]) : ['index'], 
-                [
-                    'class' => 'btn',
-                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 9px 20px; border-radius: 30px; font-family: "Varela Round", sans-serif; font-size: 14px; transition: all 0.2s ease; text-decoration: none; box-shadow: 0 2px 6px rgba(98, 17, 50, 0.08);',
-                    'onmouseover' => 'this.style.backgroundColor="#f9e4d4"; this.style.borderColor="#621132";',
-                    'onmouseout' => 'this.style.backgroundColor="white"; this.style.borderColor="#d4a373";'
-                ]
-            ) ?>
-            
+            <!-- Indicador de orden activo -->
             <?php if ($currentSort): ?>
-                <?= Html::a(
-                    '<i class="fas fa-times"></i>', 
-                    array_merge(['index'], Yii::$app->request->queryParams, ['sort' => null]), 
-                    [
-                        'class' => 'btn',
-                        'style' => 'background: white; border: 1px solid #dc3545; color: #dc3545; width: 38px; height: 38px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; text-decoration: none;',
-                        'title' => 'Limpiar ordenamiento',
-                        'onmouseover' => 'this.style.backgroundColor="#f8d7da";',
-                        'onmouseout' => 'this.style.backgroundColor="white";'
-                    ]
-                ) ?>
+                <span style="color: #621132; font-family: 'Varela Round', sans-serif; font-size: 13px; background: #f9e4d4; padding: 5px 12px; border-radius: 30px;">
+                    <i class="fas fa-check-circle" style="color: #621132; margin-right: 5px;"></i>Ordenado
+                </span>
             <?php endif; ?>
         </div>
         
+        <!-- Botón para limpiar filtros -->
         <div>
             <?= Html::a(
                 '<i class="fas fa-undo-alt" style="margin-right: 5px;"></i> Limpiar filtros', 
                 ['index'], 
                 [
                     'class' => 'btn', 
-                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 9px 18px; border-radius: 30px; font-family: "Varela Round", sans-serif; font-size: 14px; transition: all 0.2s ease; text-decoration: none;',
+                    'style' => 'background: white; border: 1px solid #d4a373; color: #621132; padding: 8px 16px; border-radius: 30px; font-family: "Varela Round", sans-serif; font-size: 14px; transition: all 0.2s ease; text-decoration: none;',
                     'onmouseover' => 'this.style.backgroundColor="#f9e4d4";',
                     'onmouseout' => 'this.style.backgroundColor="white";'
                 ]
             ) ?>
         </div>
     </div>
+
+    <!-- Estilos -->
+    <style>
+    .dropdown-item.active {
+        background-color: #f9e4d4 !important;
+        color: #621132 !important;
+        font-weight: 600;
+    }
+    .dropdown-item:hover {
+        background-color: #fdf8f4 !important;
+        color: #621132 !important;
+    }
+    .dropdown-toggle:hover {
+        background-color: #f9e4d4 !important;
+        border-color: #621132 !important;
+    }
+    
+    /* Responsividad para botones de acciones */
+    .table td:last-child {
+        white-space: nowrap !important;
+    }
+    
+    @media (max-width: 768px) {
+        .table td:last-child {
+            padding: 10px 5px !important;
+        }
+        .table .btn-sm {
+            width: 34px !important;
+            height: 34px !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 2px !important;
+            border-radius: 8px !important;
+        }
+        .table .btn-sm i {
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .table .btn-sm {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .grid-view {
+            overflow-x: auto !important;
+        }
+        .table {
+            min-width: 500px !important;
+        }
+    }
+    </style>
 
     <!-- Tabla -->
     <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(98, 17, 50, 0.15); border: 1px solid #f0e0d0;">
@@ -142,16 +199,20 @@ $currentSort = Yii::$app->request->get('sort', '');
                     'contentOptions' => ['style' => 'text-align: center; font-weight: 600; color: #621132; font-family: "Varela Round", sans-serif; padding: 15px;'],
                 ],
                 [
+                    'attribute' => 'id_unidad',
+                    'label' => 'ID',
+                    'enableSorting' => false,
+                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373; font-family: "Varela Round", sans-serif;', 'placeholder' => 'Buscar ID...'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'contentOptions' => ['style' => 'text-align: center; font-weight: 500; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                ],
+                [
                     'attribute' => 'numero_unidad',
                     'label' => 'Número de Unidad',
-                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; font-family: "Varela Round", sans-serif; padding: 15px;'],
-                    'contentOptions' => ['style' => 'text-align: center; font-weight: 500; font-family: "Varela Round", sans-serif; padding: 15px;'],
                     'enableSorting' => false,
-                    'filterInputOptions' => [
-                        'class' => 'form-control',
-                        'style' => 'border-radius: 5px; border: 1px solid #d4a373; font-family: "Varela Round", sans-serif;',
-                        'placeholder' => 'Buscar...'
-                    ],
+                    'filterInputOptions' => ['class' => 'form-control', 'style' => 'border-radius: 5px; border: 1px solid #d4a373; font-family: "Varela Round", sans-serif;', 'placeholder' => 'Buscar número...'],
+                    'headerOptions' => ['style' => 'background-color: #efefef; color: black; text-align: center; font-family: "Varela Round", sans-serif; padding: 15px;'],
+                    'contentOptions' => ['style' => 'text-align: center; font-weight: 500; font-family: "Varela Round", sans-serif; padding: 15px;'],
                 ],
                 [
                     'class' => ActionColumn::className(),
@@ -163,21 +224,21 @@ $currentSort = Yii::$app->request->get('sort', '');
                         'view' => function ($url) {
                             return Html::a('<i class="fas fa-eye"></i>', $url, [
                                 'class' => 'btn btn-sm',
-                                'style' => 'background: linear-gradient(135deg, #5a3a2a 0%, #7a5a4a 100%); color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'style' => 'background: #5a3a2a; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
                                 'title' => 'Ver',
                             ]);
                         },
                         'update' => function ($url) {
                             return Html::a('<i class="fas fa-edit"></i>', $url, [
                                 'class' => 'btn btn-sm',
-                                'style' => 'background: linear-gradient(135deg, #d4a373 0%, #e8c4a0 100%); color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'style' => 'background: #d4a373; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
                                 'title' => 'Editar',
                             ]);
                         },
                         'delete' => function ($url) {
                             return Html::a('<i class="fas fa-trash"></i>', $url, [
                                 'class' => 'btn btn-sm',
-                                'style' => 'background: linear-gradient(135deg, #800020 0%, #a00028 100%); color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
+                                'style' => 'background: #800020; color: white; margin: 0 3px; border-radius: 8px; padding: 8px 12px;',
                                 'title' => 'Eliminar',
                                 'data-confirm' => '¿Estás seguro de eliminar esta unidad?',
                                 'data-method' => 'post',

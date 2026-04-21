@@ -111,7 +111,7 @@ $currentSort = Yii::$app->request->get('sort', '');
         </div>
     </div>
 
-    <!-- Estilo para el dropdown activo -->
+    <!-- Estilos -->
     <style>
     .dropdown-item.active {
         background-color: #f9e4d4 !important;
@@ -125,6 +125,41 @@ $currentSort = Yii::$app->request->get('sort', '');
     .dropdown-toggle:hover {
         background-color: #f9e4d4 !important;
         border-color: #621132 !important;
+    }
+    
+    /* Responsividad para botones de acciones */
+    .table td:last-child {
+        white-space: nowrap !important;
+    }
+    
+    @media (max-width: 768px) {
+        .table td:last-child {
+            padding: 10px 5px !important;
+        }
+        .table .btn-sm {
+            width: 34px !important;
+            height: 34px !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 2px !important;
+            border-radius: 8px !important;
+        }
+        .table .btn-sm i {
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .table .btn-sm {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .grid-view {
+            overflow-x: auto !important;
+        }
     }
     </style>
 
