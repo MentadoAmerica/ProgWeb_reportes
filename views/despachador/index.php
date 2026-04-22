@@ -42,20 +42,20 @@ $currentSort = Yii::$app->request->get('sort', '');
         </div>
         <div>
             <?= Html::a(
-                '<i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Crear Despachador', 
-                ['create'], 
-                [
-                    'style' => 'background-color: #621132; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.2); text-decoration: none;',
-                    'onmouseover' => 'this.style.backgroundColor="#800020"; this.style.transform="translateY(-2px)"; this.style.boxShadow="0 6px 12px rgba(128, 0, 32, 0.3)";',
-                    'onmouseout' => 'this.style.backgroundColor="#621132"; this.style.transform="translateY(0)"; this.style.boxShadow="0 4px 8px rgba(98, 17, 50, 0.2)";'
-                ]
-            ) ?>
+    '<i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Crear Despachador', 
+    ['create'], 
+    [
+        'style' => 'background-color: #621132; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.2); text-decoration: none; white-space: nowrap;',
+        'onmouseover' => 'this.style.backgroundColor="#800020"; this.style.transform="translateY(-2px)"; this.style.boxShadow="0 6px 12px rgba(128, 0, 32, 0.3)";',
+        'onmouseout' => 'this.style.backgroundColor="#621132"; this.style.transform="translateY(0)"; this.style.boxShadow="0 4px 8px rgba(98, 17, 50, 0.2)";'
+    ]
+) ?>
         </div>
     </div>
 
     <!-- Filtros y Ordenamiento -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-        <div style="display: flex; gap: 10px; align-items: center;">
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+    <div style="display: flex; gap: 10px; align-items: center;">
             <!-- Botón único de ordenamiento (DROPDOWN) -->
             <div class="dropdown">
                 <button class="btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false" 
@@ -111,7 +111,7 @@ $currentSort = Yii::$app->request->get('sort', '');
         </div>
     </div>
 
-    <!-- Estilo para el dropdown activo -->
+    <!-- Estilos -->
     <style>
     .dropdown-item.active {
         background-color: #f9e4d4 !important;
@@ -125,6 +125,41 @@ $currentSort = Yii::$app->request->get('sort', '');
     .dropdown-toggle:hover {
         background-color: #f9e4d4 !important;
         border-color: #621132 !important;
+    }
+    
+    /* Responsividad para botones de acciones */
+    .table td:last-child {
+        white-space: nowrap !important;
+    }
+    
+    @media (max-width: 768px) {
+        .table td:last-child {
+            padding: 10px 5px !important;
+        }
+        .table .btn-sm {
+            width: 34px !important;
+            height: 34px !important;
+            padding: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 2px !important;
+            border-radius: 8px !important;
+        }
+        .table .btn-sm i {
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .table .btn-sm {
+            width: 30px !important;
+            height: 30px !important;
+        }
+        .grid-view {
+            overflow-x: auto !important;
+        }
     }
     </style>
 
