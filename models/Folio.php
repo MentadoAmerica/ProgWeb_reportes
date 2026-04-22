@@ -11,8 +11,6 @@ use Yii;
  */
 class Folio extends \yii\db\ActiveRecord
 {
-
-
     /**
      * {@inheritdoc}
      */
@@ -39,8 +37,7 @@ class Folio extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_folio' => 'Id Folio',
+            'id_folio' => 'Número de Folio',
         ];
     }
-
 }
