@@ -47,7 +47,7 @@ $isAdmin = Yii::$app->user->identity->isAdmin();
                 '<i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Crear Usuario', 
                 ['create'], 
                 [
-                    'style' => 'background-color: #621132; color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.2); text-decoration: none; white-space: nowrap;',
+                    'style' => 'background-color: #621132; color: white; border: none; padding: 12px 28px; border-radius: 10px; font-weight: 600; font-family: "Varela Round", sans-serif; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 8px rgba(98, 17, 50, 0.2); text-decoration: none; display: inline-flex; align-items: center; cursor: pointer;',
                     'onmouseover' => 'this.style.backgroundColor="#800020"; this.style.transform="translateY(-2px)"; this.style.boxShadow="0 6px 12px rgba(128, 0, 32, 0.3)";',
                     'onmouseout' => 'this.style.backgroundColor="#621132"; this.style.transform="translateY(0)"; this.style.boxShadow="0 4px 8px rgba(98, 17, 50, 0.2)";'
                 ]
